@@ -13,7 +13,8 @@
     "module": "esnext",
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
-    "downlevelIteration": true
+    "downlevelIteration": true,
+    "plugins": [{ "name": "typescript-plugin-css-modules" }]
   },
   "include": ["node_modules/wmr/types.d.ts", "**/*"],
   "exclude": ["dist"],
