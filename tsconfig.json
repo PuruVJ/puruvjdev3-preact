@@ -1,6 +1,8 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "types": ["wmr/types"],
+    "baseUrl": ".",
     "jsx": "preserve",
     "jsxFactory": "preact.h",
     "jsxFragmentFactory": "preact.Fragment",
@@ -16,7 +18,7 @@
     "downlevelIteration": true,
     "plugins": [{ "name": "typescript-plugin-css-modules" }]
   },
-  "include": ["node_modules/wmr/types.d.ts", "**/*"],
+  "include": ["./public/"],
   "exclude": ["dist"],
   "typeAcquisition": {
     "enable": true

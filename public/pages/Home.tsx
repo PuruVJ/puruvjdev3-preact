@@ -1,25 +1,68 @@
-import styles from './Home.module.css';
-import { useState } from 'preact/hooks';
+import { useEffect } from 'preact/hooks';
+import { useHead } from 'hoofd/preact';
+import css from './Home.module.scss';
 
 export default function Home() {
-  const [count, setCount] = useState(0);
+  useHead({
+    title: 'Puru, Developer and Designer',
+    metas: [
+      {
+        name: 'description',
+        content: `Read about web development, designing and programming on Puru Vijay's blog.`,
+      },
+      {
+        name: 'og:title',
+        content: 'Puru, Developer and Designer',
+      },
+      {
+        name: 'og:description',
+        content: `Read about web development, designing and programming on Puru Vijay's blog.`,
+      },
+      {
+        name: 'og:image',
+        content: 'https://puruvj.dev/media/blog-social-intro.png',
+      },
+      {
+        name: 'og:url',
+        content: 'https://puruvj.dev',
+      },
+    ],
+  });
+
+  useEffect(() => {
+    import('lazysizes');
+
+    document.body.classList.add('background', 'animated');
+  }, []);
 
   return (
-    <>
-      <section class={styles.home}>
-        <h2>Home</h2>
-        <img src="~/1.jpg" />
-        <p>This is the home page.</p>
-        <span>
-          <button style={{ width: 30 }} onClick={() => setCount(count - 1)}>
-            -
-          </button>
-          <output style={{ padding: 10 }}>Count: {count}</output>
-          <button style={{ width: 30 }} onClick={() => setCount(count + 1)}>
-            +
-          </button>
-        </span>
+    <main class={css.main}>
+      <br />
+      <br />
+      <br />
+      <section class={css.puruIntro}>
+        <div class={css.written}>
+          <h1>
+            Hi, I'm <mark>Puru</mark>
+          </h1>
+          <h2 class={css.aboutMe}>
+            I am a 19 y/o
+            <mark>self-taught fullstack web developer</mark>
+            based in India with 6 years of hobbyist experience. I make
+            <mark>blazing fast and performant</mark>
+            web apps. Like this blog.
+          </h2>
+        </div>
+        <div class={css.photoArea}>
+          <figure class={css.figure}>
+            <img
+              class={css.photo}
+              src="assets/photos/puru-profile.jpg"
+              alt="Puru Vijay Profile Photo"
+            />
+          </figure>
+        </div>
       </section>
-    </>
+    </main>
   );
 }

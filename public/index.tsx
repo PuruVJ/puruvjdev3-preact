@@ -1,8 +1,9 @@
+import { toStatic } from 'hoofd';
 import hydrate from 'preact-iso/hydrate';
 import { ErrorBoundary } from 'preact-iso/lazy';
 import { LocationProvider, Route, Router } from 'preact-iso/router';
+import { Nav } from './components/Nav';
 import './css/global.scss';
-import Header from './header';
 import NotFound from './pages/Error';
 import Home from './pages/Home';
 
@@ -10,11 +11,10 @@ export function App() {
   return (
     <LocationProvider>
       <div class="app">
-        <Header />
+        <Nav />
         <ErrorBoundary>
           <Router>
             <Route path="/" component={Home} />
-
             <NotFound default />
           </Router>
         </ErrorBoundary>
@@ -26,6 +26,38 @@ export function App() {
 hydrate(<App />);
 
 export async function prerender(data) {
+  console.log(data);
   const { default: prerender } = await import('preact-iso/prerender');
-  return await prerender(<App {...data} />);
+  const { html, links: htmlLinks } = await prerender(<App {...data} />);
+  const { links, metas, title } = toStatic();
+  console.log({ links, metas, title });
+  const head = stringify(title, metas, links);
+
+  const htmlWithHead = head + html;
+
+  return { html: htmlWithHead, links: htmlLinks };
 }
+
+const stringify = (title, metas, links) => {
+  const visited = new Set();
+  return `
+    <title>${title}</title>
+
+    ${metas.reduce((acc, meta) => {
+      if (!visited.has(meta.charset ? meta.keyword : meta[meta.keyword])) {
+        visited.add(meta.charset ? meta.keyword : meta[meta.keyword]);
+        return `${acc}<meta ${meta.keyword}="${meta[meta.keyword]}"${
+          meta.charset ? '' : ` content="${meta.content}"`
+        }>`;
+      }
+      return acc;
+    }, '')}
+
+    ${links.reduce((acc, link) => {
+      return `${acc}<link${Object.keys(link).reduce(
+        (properties, key) => `${properties} ${key}="${link[key]}"`,
+        ''
+      )}>`;
+    }, '')}
+  `;
+};

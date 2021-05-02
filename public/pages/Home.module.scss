@@ -1,0 +1,107 @@
+.puruIntro {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+}
+
+.photoArea,
+.figure {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+.photo,
+.figure {
+  border-radius: 50%;
+
+  margin: 0;
+}
+
+.photo {
+  width: 25vmax;
+  height: 25vmax;
+  min-height: 0;
+
+  box-shadow: 0 0 0 1rem var(--app-color-primary);
+
+  transition: box-shadow 200ms ease-out;
+}
+
+.written {
+  max-width: 50%;
+}
+
+.aboutMe {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 550 !important;
+}
+
+.main {
+  mark {
+    background-color: transparent;
+    color: var(--app-color-primary);
+  }
+
+  h1,
+  h2 {
+    line-height: 1.618;
+  }
+
+  .hr {
+    width: 100%;
+
+    display: flex;
+    justify-content: center;
+  }
+
+  .contact-me {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    justify-items: stretch;
+
+    & > div {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      flex: 1;
+    }
+
+    path,
+    rect {
+      transition: fill 200ms ease-in;
+      // transition-delay: -100ms;
+    }
+
+    .cm-svg svg {
+      --size: 100%;
+      width: var(--size);
+      height: auto;
+      min-height: 0;
+    }
+  }
+
+  @media screen and (max-width: 600px) {
+    .puruIntro {
+      flex-direction: column;
+    }
+
+    img {
+      width: 90%;
+      height: auto;
+    }
+
+    .written {
+      max-width: 100%;
+
+      margin-top: 2rem;
+    }
+
+    .contact-me {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  }
+}
