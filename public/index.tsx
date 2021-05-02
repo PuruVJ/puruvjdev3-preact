@@ -1,11 +1,13 @@
 import { toStatic } from 'hoofd';
 import hydrate from 'preact-iso/hydrate';
-import { ErrorBoundary } from 'preact-iso/lazy';
+import lazy, { ErrorBoundary } from 'preact-iso/lazy';
 import { LocationProvider, Route, Router } from 'preact-iso/router';
 import { Nav } from './components/Nav';
 import './css/global.scss';
 import NotFound from './pages/Error';
 import Home from './pages/Home';
+
+const BlogIndex = lazy(() => import('./pages/BlogIndex'));
 
 export function App() {
   return (
@@ -15,6 +17,7 @@ export function App() {
         <ErrorBoundary>
           <Router>
             <Route path="/" component={Home} />
+            <Route path="/blog" component={BlogIndex} />
             <NotFound default />
           </Router>
         </ErrorBoundary>

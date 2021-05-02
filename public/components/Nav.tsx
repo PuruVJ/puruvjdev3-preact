@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { useLocation } from 'preact-iso';
+import { useLocation } from 'preact-iso/router';
 import { useEffect, useState } from 'preact/hooks';
 import { throttle } from 'throttle-debounce';
 import css from './Nav.module.scss';
@@ -14,8 +14,6 @@ export const Nav = () => {
     const handleScrollThrottled = throttle(50, false, handleScroll);
     document.body.addEventListener('scroll', handleScrollThrottled);
 
-    console.log(location);
-
     return () => {
       document.body.removeEventListener('scroll', handleScrollThrottled);
     };
@@ -23,10 +21,20 @@ export const Nav = () => {
 
   return (
     <nav class={clsx(css.nav, scrollY > 2 && css.shadow)}>
-      <ul>
+      <ul class={css.navLinksList}>
         <li>
           <a aria-current={location.path === '/' && 'page'} href=".">
             HOME
+          </a>
+        </li>
+        <li>
+          <a aria-current={location.path.startsWith('/blog') && 'page'} href="/blog">
+            BLOG
+          </a>
+        </li>
+        <li>
+          <a aria-current={location.path.startsWith('/works') && 'page'} href="/works">
+            WORKS
           </a>
         </li>
       </ul>
