@@ -3,6 +3,8 @@ import { useLocation } from 'preact-iso/router';
 import { useEffect, useState } from 'preact/hooks';
 import { throttle } from 'throttle-debounce';
 import css from './Nav.module.scss';
+import { SiteLogoSVG } from './svg/SiteLogoSVG';
+import { ThemeSwitcher } from './ThemeSwitcher';
 
 export const Nav = () => {
   const [scrollY, setScrollY] = useState(0);
@@ -38,6 +40,15 @@ export const Nav = () => {
           </a>
         </li>
       </ul>
+
+      <div class={css.brand}>
+        <SiteLogoSVG />
+        <span>puruvj.dev</span>
+      </div>
+      <span />
+      <span class={css.themeSwitcher}>
+        <ThemeSwitcher />
+      </span>
     </nav>
   );
 };

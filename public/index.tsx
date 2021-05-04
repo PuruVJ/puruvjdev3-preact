@@ -1,4 +1,3 @@
-import { toStatic } from 'hoofd';
 import hydrate from 'preact-iso/hydrate';
 import lazy, { ErrorBoundary } from 'preact-iso/lazy';
 import { LocationProvider, Route, Router } from 'preact-iso/router';
@@ -6,6 +5,8 @@ import { Nav } from './components/Nav';
 import './css/global.scss';
 import NotFound from './pages/Error';
 import Home from './pages/Home';
+
+import 'preact/debug';
 
 const BlogIndex = lazy(() => import('./pages/BlogIndex'));
 
@@ -31,36 +32,7 @@ hydrate(<App />);
 export async function prerender(data) {
   console.log(data);
   const { default: prerender } = await import('preact-iso/prerender');
-  const { html, links: htmlLinks } = await prerender(<App {...data} />);
-  const { links, metas, title } = toStatic();
-  console.log({ links, metas, title });
-  const head = stringify(title, metas, links);
+  const { html, links } = await prerender(<App {...data} />);
 
-  const htmlWithHead = head + html;
-
-  return { html: htmlWithHead, links: htmlLinks };
+  return { html, links };
 }
-
-const stringify = (title, metas, links) => {
-  const visited = new Set();
-  return `
-    <title>${title}</title>
-
-    ${metas.reduce((acc, meta) => {
-      if (!visited.has(meta.charset ? meta.keyword : meta[meta.keyword])) {
-        visited.add(meta.charset ? meta.keyword : meta[meta.keyword]);
-        return `${acc}<meta ${meta.keyword}="${meta[meta.keyword]}"${
-          meta.charset ? '' : ` content="${meta.content}"`
-        }>`;
-      }
-      return acc;
-    }, '')}
-
-    ${links.reduce((acc, link) => {
-      return `${acc}<link${Object.keys(link).reduce(
-        (properties, key) => `${properties} ${key}="${link[key]}"`,
-        ''
-      )}>`;
-    }, '')}
-  `;
-};
