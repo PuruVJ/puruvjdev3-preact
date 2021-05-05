@@ -11,6 +11,7 @@ import { headingsWithAnchorsPlugin } from './blog-plugins/headings-anchor.js';
 import { convertToTwitterEmojisPlugin } from './blog-plugins/twitter-emojis.js';
 import { seriesLinksPlugin } from './blog-plugins/series-links.js';
 import { generateTOC } from './blog-plugins/generate-toc.js';
+import { ASSETS_ROOT_PATH, BLOG_POSTS_MD_PATH, RELATIVE_ASSETS_PATH } from './constants.js';
 
 const { readdir, readFile, writeFile } = promises;
 
@@ -53,9 +54,9 @@ const { readdir, readFile, writeFile } = promises;
   };
 
   // get all blogs in directory
-  const filesAbs = (await readdir('../src/blog')).filter((file) => file.endsWith('.md'));
+  const filesAbs = (await readdir(BLOG_POSTS_MD_PATH)).filter((file) => file.endsWith('.md'));
 
-  const files = filesAbs.map((absFile) => `../src/blog/${absFile}`);
+  const files = filesAbs.map((absFile) => `${BLOG_POSTS_MD_PATH}/${absFile}`);
 
   // Define the series object here to collect all the series
   const seriesList = {};
@@ -113,7 +114,8 @@ const { readdir, readFile, writeFile } = promises;
     if (!published) continue;
 
     // Reset the cover image if required
-    attributes.cover_image = attributes.cover_image || 'media/blog-social-intro.png';
+    attributes.cover_image =
+      attributes.cover_image || `${RELATIVE_ASSETS_PATH}/media/blog-social-intro.png`;
 
     // Get the series
     const series = attributes.series;
@@ -159,7 +161,7 @@ const { readdir, readFile, writeFile } = promises;
     });
 
     await writeFile(
-      `../static/blog/${fileName}.json`,
+      `${ASSETS_ROOT_PATH}/blog/${fileName}.json`,
       JSON.stringify({
         ...attributes,
         body: html,

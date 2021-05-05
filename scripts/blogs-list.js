@@ -2,12 +2,13 @@
 import { promises } from 'fs';
 import twemoji from 'twemoji';
 import fm from 'front-matter';
+import { ASSETS_ROOT_PATH, BLOG_POSTS_MD_PATH } from './constants.js';
 
 const { readdir, readFile, writeFile } = promises;
 
 (async () => {
   // Let's get all the files list
-  const filesList = (await readdir('../src/blog/')).filter((file) => file.endsWith('.md'));
+  const filesList = (await readdir(BLOG_POSTS_MD_PATH)).filter((file) => file.endsWith('.md'));
 
   /**
    * @type {{[blogID: string] : {id: string, date: Date}[]}}
@@ -15,7 +16,7 @@ const { readdir, readFile, writeFile } = promises;
   let seriesList = {};
 
   for (let file of filesList) {
-    const filePath = `../src/blog/${file}`;
+    const filePath = `${BLOG_POSTS_MD_PATH}/${file}`;
 
     // Data
     const data = await readFile(filePath, 'utf-8');
@@ -44,7 +45,7 @@ const { readdir, readFile, writeFile } = promises;
   console.log('--------- Generating blogs list -----------');
 
   for (let file of filesList) {
-    const filePath = `../src/blog/${file}`;
+    const filePath = `${BLOG_POSTS_MD_PATH}/${file}`;
 
     // Data
     const data = await readFile(filePath, 'utf-8');
@@ -87,7 +88,7 @@ const { readdir, readFile, writeFile } = promises;
   });
 
   // Write data
-  await writeFile('../static/data/blogs-list.json', JSON.stringify(finaldata));
+  await writeFile(`${ASSETS_ROOT_PATH}/data/blogs-list.json`, JSON.stringify(finaldata));
 
   console.log('---------- Generated ------------');
 })();

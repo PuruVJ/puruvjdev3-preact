@@ -3,13 +3,14 @@ import _cloudinary from 'cloudinary';
 import dotenv from 'dotenv';
 import fs from 'fs';
 import fetch from 'node-fetch';
-import { resolve } from 'path';
+import { normalize, relative } from 'path';
+import { ASSETS_ROOT_PATH, BLOG_POSTS_MD_PATH, RELATIVE_ASSETS_PATH } from './constants.js';
 import { gifMarkup, optimizeGif } from './gif-module.js';
 
 const { access, mkdir, readdir, readFile, writeFile } = fs.promises;
 
 dotenv.config({
-  path: resolve(new URL(import.meta.url).pathname, '../.env'),
+  path: '../.env',
 });
 
 const cloudinary = _cloudinary.v2;
@@ -25,7 +26,7 @@ cloudinary.config({
  * Assuming the image is media folder in assets
  * @param {string} src
  */
-async function optimizeBlogImages(src, returnMarkup = true) {
+export async function optimizeBlogImages(src, returnMarkup = true) {
   // Start measuring
   console.log('Starting to retrieve/create image/data');
 
@@ -36,19 +37,15 @@ async function optimizeBlogImages(src, returnMarkup = true) {
   const [fileName] = filePath.split('.');
 
   const [format] = filePath.split('.').reverse();
-  const folderPath = `../static/${baseFolder}/${fileName}`;
-
-  console.log(format);
+  const folderPath = `${ASSETS_ROOT_PATH}/${baseFolder}/${fileName}`;
 
   // The list of file paths to return
   const list = {
     large: {
-      webp: `${baseFolder}/${fileName}/large.webp`,
-      org: `${baseFolder}/${fileName}/large.${format}`,
+      org: `${RELATIVE_ASSETS_PATH}/${baseFolder}/${fileName}/large.${format}`,
     },
     small: {
-      webp: `${baseFolder}/${fileName}/small.webp`,
-      org: `${baseFolder}/${fileName}/small.${format}`,
+      org: `${RELATIVE_ASSETS_PATH}/${baseFolder}/${fileName}/small.${format}`,
     },
     aspectHTW: 1,
   };
@@ -91,7 +88,7 @@ async function optimizeBlogImages(src, returnMarkup = true) {
   // The image is optimizable. That means work, boys!
   // Let's try make the folder
   try {
-    await mkdir(`../static/${baseFolder}/${fileName}`);
+    await mkdir(`${ASSETS_ROOT_PATH}/${baseFolder}/${fileName}`);
   } catch (e) {}
 
   const bigOriginalP = cloudinary.uploader.upload(`${folderPath}.${format}`, {
@@ -156,7 +153,7 @@ async function optimizeBlogImages(src, returnMarkup = true) {
   return returnMarkup ? markup(list, format) : list;
 }
 
-// optimizeBlogImages('../../static/media/blog-every-day-blog-page-image.png', false);
+optimizeBlogImages('../../static/media/dumbledore-pretty-hard.gif', false);
 
 function markup(list, format) {
   return `
@@ -179,5 +176,3 @@ function markup(list, format) {
   </figure>
   `;
 }
-
-export { optimizeBlogImages };

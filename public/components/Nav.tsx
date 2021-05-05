@@ -22,11 +22,7 @@ export const Nav = () => {
   useEffect(() => {
     const throttledHandleScroll = throttle(50, false, handleScroll);
 
-    document.body.addEventListener('scroll', throttledHandleScroll);
-
-    return () => {
-      document.body.removeEventListener('scroll', throttledHandleScroll);
-    };
+    document.body.onscroll = throttledHandleScroll;
   }, []);
 
   return (

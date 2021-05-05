@@ -4,6 +4,7 @@ import { resolve } from 'path';
 import _cloudinary from 'cloudinary';
 import fetch from 'node-fetch';
 import dotenv from 'dotenv';
+import { ASSETS_ROOT_PATH, RELATIVE_ASSETS_PATH } from './constants.js';
 
 const { mkdir, writeFile } = fs.promises;
 
@@ -24,7 +25,7 @@ cloudinary.config({
  * @param {string} fileName without extension
  */
 async function optimizeGif(fileName) {
-  const folderPath = `../static/media/${fileName}`;
+  const folderPath = `${ASSETS_ROOT_PATH}/media/${fileName}`;
   const gifPath = `${folderPath}.gif`;
 
   try {
@@ -54,7 +55,7 @@ async function optimizeGif(fileName) {
 }
 
 function gifMarkup(fileName) {
-  const baseForMarkup = `/media/${fileName}`;
+  const baseForMarkup = `${RELATIVE_ASSETS_PATH}/media/${fileName}`;
 
   return `
   <div class="gif-vid-container">
