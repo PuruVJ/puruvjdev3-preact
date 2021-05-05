@@ -1,5 +1,5 @@
 import { mdiMoonFull, mdiWhiteBalanceSunny } from '@mdi/js';
-import { useMeta } from 'hoofd/preact';
+import { useLink, useMeta } from 'hoofd/preact';
 import { useEffect, useState } from 'preact/hooks';
 import { Theme, useTheme } from '../hooks/use-theme';
 import { AppIcon } from './AppIcon';
@@ -7,6 +7,8 @@ import { MoonSVG } from './svg/MoonSVG';
 import css from './ThemeSwitcher.module.scss';
 
 const themes: Theme[] = ['light', 'midday', 'dark'];
+
+const dev = process.env.NODE_ENV === 'development';
 
 export const ThemeSwitcher = () => {
   const [theme, setTheme] = useTheme();
@@ -23,6 +25,11 @@ export const ThemeSwitcher = () => {
   useMeta({
     name: 'theme-color',
     content: theme === 'light' ? '#fff' : theme === 'midday' ? '#f9dec9' : '#222428',
+  });
+
+  useLink({
+    rel: 'icon',
+    href: `/assets/icons/favicon-${dev ? 'dev' : theme}.${dev ? 'svg' : 'png'}`,
   });
 
   return (

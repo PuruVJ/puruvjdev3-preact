@@ -1,5 +1,3 @@
-@import './themes';
-
 body {
   margin: 0;
   padding: 0;
@@ -15,7 +13,7 @@ body {
   background-color: var(--app-color-shell);
   color: var(--app-color-dark);
 
-  overflow-y: scroll;
+  overflow-y: hidden;
 
   display: flex;
   flex-direction: column;
@@ -112,7 +110,7 @@ a[href]:hover {
 
 .app {
   width: 61.8%;
-  height: 100vh;
+  min-height: 100vh;
 
   display: flex;
   flex-direction: column;

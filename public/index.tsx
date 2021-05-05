@@ -5,6 +5,7 @@ import lazy, { ErrorBoundary } from 'preact-iso/lazy';
 import { LocationProvider, Route, Router } from 'preact-iso/router';
 import { Nav } from './components/Nav';
 import './css/global.scss';
+import './css/themes.scss';
 import NotFound from './pages/Error';
 import Home from './pages/Home';
 import('preact/devtools');
@@ -15,7 +16,7 @@ export function App() {
   return (
     <LocationProvider>
       <Provider>
-        <div class="app" style="margin-top: 3.75rem">
+        <div class="app" style="padding-top: 3.75rem">
           <Nav />
           <ErrorBoundary>
             <Router>
