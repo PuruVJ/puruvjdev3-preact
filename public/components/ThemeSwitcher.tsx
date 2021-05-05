@@ -22,7 +22,7 @@ export const ThemeSwitcher = () => {
 
   useMeta({
     name: 'theme-color',
-    content: currentThemeIndex === 0 ? 'white' : currentThemeIndex === 1 ? '#f9dec9' : '#222428',
+    content: theme === 'light' ? '#fff' : theme === 'midday' ? '#f9dec9' : '#222428',
   });
 
   return (

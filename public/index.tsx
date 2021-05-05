@@ -1,3 +1,5 @@
+import { toStatic } from 'hoofd/preact';
+import { Provider } from 'jotai';
 import hydrate from 'preact-iso/hydrate';
 import lazy, { ErrorBoundary } from 'preact-iso/lazy';
 import { LocationProvider, Route, Router } from 'preact-iso/router';
@@ -5,25 +7,25 @@ import { Nav } from './components/Nav';
 import './css/global.scss';
 import NotFound from './pages/Error';
 import Home from './pages/Home';
-
-import 'preact/debug';
-import { toStatic } from 'hoofd';
+import('preact/devtools');
 
 const BlogIndex = lazy(() => import('./pages/BlogIndex'));
 
 export function App() {
   return (
     <LocationProvider>
-      <div class="app">
-        <Nav />
-        <ErrorBoundary>
-          <Router>
-            <Route path="/" component={Home} />
-            <Route path="/blog" component={BlogIndex} />
-            <NotFound default />
-          </Router>
-        </ErrorBoundary>
-      </div>
+      <Provider>
+        <div class="app" style="margin-top: 3.75rem">
+          <Nav />
+          <ErrorBoundary>
+            <Router>
+              <Route path="/" component={Home} />
+              <Route path="/blog" component={BlogIndex} />
+              <NotFound default />
+            </Router>
+          </ErrorBoundary>
+        </div>
+      </Provider>
     </LocationProvider>
   );
 }
@@ -34,7 +36,11 @@ export async function prerender(data) {
   const { default: prerender } = await import('preact-iso/prerender');
   const { html, links } = await prerender(<App {...data} />);
 
-  console.log(toStatic());
+  const head = toStatic();
+  const elements = new Set([
+    ...head.links.map((props) => ({ type: 'link', props })),
+    ...head.metas.map((props) => ({ type: 'meta', props })),
+  ]);
 
-  return { html, links, head: toStatic() };
+  return { html, links, head: { title: head.title, lang: head.lang, elements } };
 }

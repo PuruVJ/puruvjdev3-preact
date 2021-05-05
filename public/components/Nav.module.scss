@@ -20,7 +20,7 @@
 
   transition: box-shadow 150ms ease-out, background-color var(--transition-duration) ease-in;
 
-  &.dark.shadow {
+  :global(body.dark) &.shadow {
     background-color: #383a3e;
   }
 

@@ -1,6 +1,7 @@
 import clsx from 'clsx';
 import { useLocation } from 'preact-iso/router';
 import { useEffect, useState } from 'preact/hooks';
+import { useTimeout } from '../hooks/use-timeout';
 import { throttle } from 'throttle-debounce';
 import css from './Nav.module.scss';
 import { SiteLogoSVG } from './svg/SiteLogoSVG';
@@ -8,16 +9,23 @@ import { ThemeSwitcher } from './ThemeSwitcher';
 
 export const Nav = () => {
   const [scrollY, setScrollY] = useState(0);
-  const location = useLocation();
+  const { path } = useLocation();
 
-  const handleScroll = () => setScrollY(document.body.scrollTop);
+  useTimeout(() => {
+    document.body.style.setProperty('--transition-duration', '200ms');
+  }, 200);
+
+  const handleScroll = () => {
+    setScrollY(document.documentElement.scrollTop);
+  };
 
   useEffect(() => {
-    const handleScrollThrottled = throttle(50, false, handleScroll);
-    document.body.addEventListener('scroll', handleScrollThrottled);
+    const throttledHandleScroll = throttle(50, false, handleScroll);
+
+    document.body.addEventListener('scroll', throttledHandleScroll);
 
     return () => {
-      document.body.removeEventListener('scroll', handleScrollThrottled);
+      document.body.removeEventListener('scroll', throttledHandleScroll);
     };
   }, []);
 
@@ -25,17 +33,17 @@ export const Nav = () => {
     <nav class={clsx(css.nav, scrollY > 2 && css.shadow)}>
       <ul class={css.navLinksList}>
         <li>
-          <a aria-current={location.path === '/' && 'page'} href=".">
+          <a aria-current={path === '/' && 'page'} href=".">
             HOME
           </a>
         </li>
         <li>
-          <a aria-current={location.path.startsWith('/blog') && 'page'} href="/blog">
+          <a aria-current={path.startsWith('/blog') && 'page'} href="/blog">
             BLOG
           </a>
         </li>
         <li>
-          <a aria-current={location.path.startsWith('/works') && 'page'} href="/works">
+          <a aria-current={path.startsWith('/works') && 'page'} href="/works">
             WORKS
           </a>
         </li>
