@@ -8,12 +8,9 @@ import css from './ThemeSwitcher.module.scss';
 
 const themes: Theme[] = ['light', 'midday', 'dark'];
 
-const localTheme = localStorage.getItem('theme');
-const browserPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
 export const ThemeSwitcher = () => {
-  const [currentThemeIndex, setCurrentThemeIndex] = useState(0);
   const [theme, setTheme] = useTheme();
+  const [currentThemeIndex, setCurrentThemeIndex] = useState(themes.indexOf(theme));
 
   function nextTheme() {
     setCurrentThemeIndex((currentThemeIndex + 1) % themes.length);
