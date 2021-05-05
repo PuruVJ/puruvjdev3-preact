@@ -28,7 +28,7 @@
     box-shadow: 0 3.4px 6.3px rgba(0, 0, 0, 0.099), 0 27px 50px rgba(0, 0, 0, 0.1);
   }
 
-  a {
+  & a {
     --color: var(--app-color-primary);
     --color-rgb: var(--app-color-primary-rgb);
     --marker-height: 6px;
@@ -70,7 +70,7 @@
     }
   }
 
-  a::after {
+  & a::after {
     content: '';
 
     position: absolute;

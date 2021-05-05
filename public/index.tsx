@@ -7,6 +7,7 @@ import NotFound from './pages/Error';
 import Home from './pages/Home';
 
 import 'preact/debug';
+import { toStatic } from 'hoofd';
 
 const BlogIndex = lazy(() => import('./pages/BlogIndex'));
 
@@ -30,9 +31,10 @@ export function App() {
 hydrate(<App />);
 
 export async function prerender(data) {
-  console.log(data);
   const { default: prerender } = await import('preact-iso/prerender');
   const { html, links } = await prerender(<App {...data} />);
 
-  return { html, links };
+  console.log(toStatic());
+
+  return { html, links, head: toStatic() };
 }
