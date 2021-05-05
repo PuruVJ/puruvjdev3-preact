@@ -9,7 +9,7 @@ import { ASSETS_ROOT_PATH, RELATIVE_ASSETS_PATH } from './constants.js';
 const { mkdir, writeFile } = fs.promises;
 
 dotenv.config({
-  path: resolve(new URL(import.meta.url).pathname, '../.env'),
+  path: '../.env',
 });
 
 const cloudinary = _cloudinary.v2;
@@ -25,13 +25,14 @@ cloudinary.config({
  * @param {string} fileName without extension
  */
 async function optimizeGif(fileName) {
-  const folderPath = `${ASSETS_ROOT_PATH}/media/${fileName}`;
+  const folderPath = `${ASSETS_ROOT_PATH}media/${fileName}`;
   const gifPath = `${folderPath}.gif`;
 
   try {
     await mkdir(folderPath);
-  } catch (e) {}
-
+  } catch (e) {
+    // console.log(e);
+  }
   const res = await cloudinary.uploader.upload(gifPath, {
     format: 'mp4',
     folder: 'media',

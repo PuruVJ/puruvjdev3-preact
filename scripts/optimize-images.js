@@ -3,8 +3,7 @@ import _cloudinary from 'cloudinary';
 import dotenv from 'dotenv';
 import fs from 'fs';
 import fetch from 'node-fetch';
-import { normalize, relative } from 'path';
-import { ASSETS_ROOT_PATH, BLOG_POSTS_MD_PATH, RELATIVE_ASSETS_PATH } from './constants.js';
+import { ASSETS_ROOT_PATH, RELATIVE_ASSETS_PATH } from './constants.js';
 import { gifMarkup, optimizeGif } from './gif-module.js';
 
 const { access, mkdir, readdir, readFile, writeFile } = fs.promises;
@@ -153,8 +152,11 @@ export async function optimizeBlogImages(src, returnMarkup = true) {
   return returnMarkup ? markup(list, format) : list;
 }
 
-optimizeBlogImages('../../static/media/dumbledore-pretty-hard.gif', false);
-
+try {
+  optimizeBlogImages('../../static/media/deep-dive-preact-source--wait-what.gif', false);
+} catch (e) {
+  console.log(e);
+}
 function markup(list, format) {
   return `
   <figure style="width: 100%;padding-top: ${list.aspectHTW * 100}%;">

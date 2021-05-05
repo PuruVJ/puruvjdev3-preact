@@ -1,12 +1,13 @@
 // @ts-check
-import yaml from 'yaml';
-import { optimizeBlogImages } from './optimize-images.js';
 import { promises } from 'fs';
+import yaml from 'yaml';
+import { ASSETS_ROOT_PATH, SRC_FOLDER_PATH } from './constants.js';
+import { optimizeBlogImages } from './optimize-images.js';
 
 const { readFile, writeFile } = promises;
 
 (async () => {
-  const worksFilePath = await readFile('../src/works.yaml', 'utf-8');
+  const worksFilePath = await readFile(`${SRC_FOLDER_PATH}/works.yml`, 'utf-8');
 
   /**
    * @type {
@@ -34,5 +35,5 @@ const { readFile, writeFile } = promises;
     dataToCreate.push(work);
   }
 
-  await writeFile('../static/data/works.json', JSON.stringify(dataToCreate));
+  await writeFile(`${ASSETS_ROOT_PATH}/data/works.json`, JSON.stringify(dataToCreate));
 })();

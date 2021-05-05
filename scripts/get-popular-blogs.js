@@ -2,6 +2,7 @@
 import { promises as fsp } from 'fs';
 import fm from 'front-matter';
 import fetch from 'node-fetch';
+import { ASSETS_ROOT_PATH, SRC_FOLDER_PATH } from './constants.js';
 
 const { readdir, readFile, writeFile } = fsp;
 
@@ -10,13 +11,15 @@ const MAX_COUNT = 6;
 
 async function main() {
   // Read all the blog posts
-  const blogPostFiles = (await readdir('../src/blog/')).filter((str) => str.endsWith('.md'));
+  const blogPostFiles = (await readdir(`${SRC_FOLDER_PATH}/blog/`)).filter((str) =>
+    str.endsWith('.md')
+  );
 
   // Read file
   const datesList = [];
 
   for (let file of blogPostFiles) {
-    const content = await readFile(`../src/blog/${file}`, 'utf8');
+    const content = await readFile(`${SRC_FOLDER_PATH}/blog/${file}`, 'utf8');
 
     // @ts-ignore
     const metadata = fm(content).attributes;
@@ -45,7 +48,9 @@ async function main() {
 
   // Now let's get the data from the already generated metadata in blogs-list.js
   /** @type {any[]} */
-  const finalMetaData = JSON.parse(await readFile('../static/data/blogs-list.json', 'utf8'));
+  const finalMetaData = JSON.parse(
+    await readFile(`${ASSETS_ROOT_PATH}/data/blogs-list.json`, 'utf8')
+  );
 
   // Get data and write to file
   const rankedData = rankList.map(({ id }) => finalMetaData.find((fmData) => fmData.id === id));
@@ -53,7 +58,7 @@ async function main() {
   rankedData.length = MAX_COUNT;
 
   // Write to the file
-  await writeFile('../static/data/homepage-blogs-list.json', JSON.stringify(rankedData));
+  await writeFile(`${ASSETS_ROOT_PATH}/data/homepage-blogs-list.json`, JSON.stringify(rankedData));
 }
 
 /**
