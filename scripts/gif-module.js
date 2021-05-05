@@ -33,6 +33,7 @@ async function optimizeGif(fileName) {
   } catch (e) {
     // console.log(e);
   }
+
   const res = await cloudinary.uploader.upload(gifPath, {
     format: 'mp4',
     folder: 'media',
