@@ -1,12 +1,10 @@
 import clsx from 'clsx';
 import { useLocation } from 'preact-iso/router';
-import { useEffect, useState } from 'preact/hooks';
+import { useInView } from 'react-intersection-observer';
 import { useTimeout } from '../hooks/use-timeout';
-import { throttle } from 'throttle-debounce';
 import css from './Nav.module.scss';
 import { SiteLogoSVG } from './svg/SiteLogoSVG';
 import { ThemeSwitcher } from './ThemeSwitcher';
-import { useInView } from 'react-intersection-observer';
 
 export const Nav = () => {
   const { path } = useLocation();
