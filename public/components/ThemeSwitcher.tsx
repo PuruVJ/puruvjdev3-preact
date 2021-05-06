@@ -7,7 +7,7 @@ import { MoonSVG } from './svg/MoonSVG';
 import { SunsetSVG } from './svg/SunsetSVG';
 import css from './ThemeSwitcher.module.scss';
 
-const themes: Theme[] = ['morning', 'noon', 'twilight', 'night'];
+const themes: Theme[] = ['morning', 'noon', 'night', 'twilight'];
 
 const dev = process.env.NODE_ENV === 'development';
 
