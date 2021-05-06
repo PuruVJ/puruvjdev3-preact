@@ -1,16 +1,16 @@
-import { toStatic, useTitleTemplate } from 'hoofd/preact';
+import { toStatic } from 'hoofd/preact';
 import { Provider } from 'jotai';
-import hydrate from 'preact-iso/hydrate';
-import lazy, { ErrorBoundary } from 'preact-iso/lazy';
-import { LocationProvider, Route, Router } from 'preact-iso/router';
+import { ErrorBoundary, hydrate, lazy, LocationProvider, Route, Router } from 'preact-iso';
 import { Nav } from './components/Nav';
 import './css/global.scss';
 import './css/themes.scss';
-import NotFound from './pages/Error';
 import Home from './pages/Home';
 import('preact/devtools');
+import { BlogType } from './types/blog.type';
 
 const BlogIndex = lazy(() => import('./pages/BlogIndex'));
+const BlogPage = lazy(() => import('./pages/BlogPage'));
+const NotFound = lazy(() => import('./pages/Error'));
 
 export function App() {
   return (
@@ -22,7 +22,8 @@ export function App() {
             <Router>
               <Route path="/" component={Home} />
               <Route path="/blog" component={BlogIndex} />
-              <NotFound default />
+              <Route path="/blog/:id" component={BlogPage} />
+              <Route default component={NotFound} />
             </Router>
           </ErrorBoundary>
         </div>
@@ -34,8 +35,19 @@ export function App() {
 hydrate(<App />);
 
 export async function prerender(data) {
-  const { default: prerender } = await import('preact-iso/prerender');
+  const { prerender } = await import('preact-iso');
   const { html, links } = await prerender(<App {...data} />);
+
+  const { promises: fsp } = (await eval('u=>import(u)')('fs')) as typeof import('fs');
+
+  const blogsListData: BlogType[] = JSON.parse(
+    await fsp.readFile(new URL('./assets/data/blogs-list.json', import.meta.url), 'utf-8')
+  );
+  const blogIDs = blogsListData.map(({ id }) => id);
+
+  for (let blogID of blogIDs) {
+    links.add(`/blog/${blogID.replace('.json', '')}`);
+  }
 
   const head = toStatic();
   const elements = new Set([

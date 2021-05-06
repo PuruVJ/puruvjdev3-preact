@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { useLocation } from 'preact-iso/router';
+import { useLocation } from 'preact-iso';
 import { useInView } from 'react-intersection-observer';
 import { useTimeout } from '../hooks/use-timeout';
 import css from './Nav.module.scss';

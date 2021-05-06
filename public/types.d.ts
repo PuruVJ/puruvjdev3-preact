@@ -29,3 +29,8 @@ declare namespace React {
 interface Array<T> {
   fill<T extends any>(value: T, start?: number | undefined, end?: number | undefined): T[];
 }
+
+declare module 'dir:*' {
+  const arr: string[];
+  export default arr;
+}
