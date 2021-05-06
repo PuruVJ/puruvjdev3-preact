@@ -1,4 +1,4 @@
-import { toStatic } from 'hoofd/preact';
+import { toStatic, useTitleTemplate } from 'hoofd/preact';
 import { Provider } from 'jotai';
 import hydrate from 'preact-iso/hydrate';
 import lazy, { ErrorBoundary } from 'preact-iso/lazy';
