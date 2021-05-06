@@ -4,9 +4,10 @@ import { useEffect, useState } from 'preact/hooks';
 import { Theme, useTheme } from '../hooks/use-theme';
 import { AppIcon } from './AppIcon';
 import { MoonSVG } from './svg/MoonSVG';
+import { SunsetSVG } from './svg/SunsetSVG';
 import css from './ThemeSwitcher.module.scss';
 
-const themes: Theme[] = ['light', 'midday', 'dark'];
+const themes: Theme[] = ['morning', 'noon', 'twilight', 'night'];
 
 const dev = process.env.NODE_ENV === 'development';
 
@@ -24,7 +25,14 @@ export const ThemeSwitcher = () => {
 
   useMeta({
     name: 'theme-color',
-    content: theme === 'light' ? '#fff' : theme === 'midday' ? '#f9dec9' : '#222428',
+    content:
+      theme === 'morning'
+        ? '#fff'
+        : theme === 'noon'
+        ? '#f9dec9'
+        : theme === 'twilight'
+        ? '#13132A'
+        : '#222428',
   });
 
   useLink({
@@ -34,9 +42,10 @@ export const ThemeSwitcher = () => {
 
   return (
     <button class={css.button} aria-label={themes[currentThemeIndex]} onClick={nextTheme}>
-      {theme === 'light' && <AppIcon path={mdiWhiteBalanceSunny} />}
-      {theme === 'midday' && <AppIcon path={mdiMoonFull} />}
-      {theme === 'dark' && <MoonSVG />}
+      {theme === 'morning' && <AppIcon path={mdiWhiteBalanceSunny} />}
+      {theme === 'noon' && <AppIcon path={mdiMoonFull} />}
+      {theme === 'twilight' && <SunsetSVG />}
+      {theme === 'night' && <MoonSVG />}
     </button>
   );
 };

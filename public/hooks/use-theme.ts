@@ -1,16 +1,16 @@
 import { atom, useAtom } from 'jotai';
 import { useEffect, useLayoutEffect, useRef } from 'preact/hooks';
 
-export type Theme = 'light' | 'midday' | 'dark';
+export type Theme = 'morning' | 'noon' | 'twilight' | 'night';
 
 // This is needed here
 let isFirstUpdate = true;
 
 const browser = typeof window !== 'undefined';
 
-const localValue = browser ? localStorage.getItem<Theme>('theme') : 'light';
-const systemTheme =
-  browser && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+const localValue = browser ? localStorage.getItem<Theme>('theme') : 'morning';
+const systemTheme: Theme =
+  browser && matchMedia('(prefers-color-scheme: dark)').matches ? 'night' : 'morning';
 
 const themeAtom = atom<Theme>(localValue || systemTheme);
 
@@ -37,7 +37,7 @@ export function useTheme() {
   useEffect(() => {
     localStorage.setItem('theme', theme);
 
-    document.body.classList.remove('light', 'dark', 'midday');
+    document.body.classList.remove('morning', 'noon', 'twilight', 'night');
     document.body.classList.add(theme);
   }, [theme]);
 

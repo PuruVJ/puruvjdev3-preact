@@ -20,7 +20,7 @@ export const Nav = () => {
       <nav class={clsx(css.nav, !inView && css.shadow)}>
         <ul class={css.navLinksList}>
           <li>
-            <a aria-current={path === '/' && 'page'} href=".">
+            <a aria-current={path === '/' && 'page'} href="/">
               HOME
             </a>
           </li>
