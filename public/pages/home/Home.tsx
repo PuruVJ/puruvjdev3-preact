@@ -1,8 +1,21 @@
 import { useEffect } from 'preact/hooks';
 import { useHead } from 'hoofd/preact';
 import css from './Home.module.scss';
+import { WavyHRSVG } from '../../components/svg/WavyHRSVG';
+import { ContactMeSVG } from '../../components/svg/ContactMeSvg';
+import { BlogsList } from '../../components/BlogsList';
+import { BlogType } from '../../types/blog.type';
+import { usePromise } from '../../hooks/use-promise';
+import { ContactMeLink } from '../../components/ContactMeLink';
 
 export default function Home() {
+  const blogsList = usePromise(preload, ['homepage-blogs']);
+
+  async function preload(): Promise<BlogType[]> {
+    const res = await fetch(`/assets/data/homepage-blogs-list.json`);
+    return await res.json();
+  }
+
   useHead({
     title: 'Puru, Developer and Designer',
     metas: [
@@ -61,106 +74,37 @@ export default function Home() {
           </figure>
         </div>
       </section>
+
       <br />
       <br />
       <br />
+      <div class={css.hr}>
+        <WavyHRSVG />
+      </div>
       <br />
       <br />
+
+      <section class="popular-blogs">
+        <h1>Popular posts</h1>
+        <BlogsList seeMore blogsList={blogsList} />
+      </section>
+
       <br />
       <br />
+      <div class={css.hr}>
+        <WavyHRSVG />
+      </div>
       <br />
       <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
+
+      <section class={css['contact-me']}>
+        <div class={css['cm-svg']}>
+          <ContactMeSVG />
+        </div>
+        <div>
+          <ContactMeLink />
+        </div>
+      </section>
     </main>
   );
 }

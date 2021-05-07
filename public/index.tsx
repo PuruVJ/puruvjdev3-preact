@@ -1,18 +1,16 @@
-import { toStatic } from 'hoofd/preact';
 import { Provider } from 'jotai';
 import { ErrorBoundary, hydrate, lazy, LocationProvider, Route, Router } from 'preact-iso';
+import { Footer } from './components/Footer';
 import { Nav } from './components/Nav';
 import './css/global.scss';
 import './css/themes.scss';
-import Home from './pages/Home';
+import Home from './pages/home/Home';
 import('preact/devtools');
 
-// if (typeof window === 'undefined') {
-//   global.fetch = isoMorphicFetch;
-// }
+const BlogIndex = lazy(() => import('./pages/blog-index/BlogIndex'));
+const BlogPage = lazy(() => import('./pages/blog-page/BlogPage'));
+const Works = lazy(() => import('./pages/works/Works'));
 
-const BlogIndex = lazy(() => import('./pages/BlogIndex'));
-const BlogPage = lazy(() => import('./pages/BlogPage'));
 const NotFound = lazy(() => import('./pages/Error'));
 
 export function App() {
@@ -26,9 +24,12 @@ export function App() {
               <Route path="/" component={Home} />
               <Route path="/blog" component={BlogIndex} />
               <Route path="/blog/:id" component={BlogPage} />
+              <Route path="/works" component={Works} />
+
               <Route default component={NotFound} />
             </Router>
           </ErrorBoundary>
+          <Footer />
         </div>
       </Provider>
     </LocationProvider>
@@ -39,23 +40,4 @@ hydrate(<App />);
 
 export async function prerender(data) {
   return (await import('./prerender')).prerender(<App {...data} />);
-
-  // const { promises: fsp } = (await eval('u=>import(u)')('fs')) as typeof import('fs');
-
-  // const blogsListData: BlogType[] = JSON.parse(
-  //   await fsp.readFile(new URL('./assets/data/blogs-list.json', import.meta.url), 'utf-8')
-  // );
-  // const blogIDs = blogsListData.map(({ id }) => id);
-
-  // for (let blogID of blogIDs) {
-  //   links.add(`/blog/${blogID.replace('.json', '')}`);
-  // }
-
-  // const head = toStatic();
-  // const elements = new Set([
-  //   ...head.links.map((props) => ({ type: 'link', props })),
-  //   ...head.metas.map((props) => ({ type: 'meta', props })),
-  // ]);
-
-  // return { html, links, head: { title: head.title, lang: head.lang, elements } };
 }

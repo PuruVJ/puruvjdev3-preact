@@ -1,10 +1,10 @@
 import { useHead, useLink } from 'hoofd';
 import { useLocation } from 'preact-iso';
 import { useEffect } from 'preact/hooks';
-import { formatDate } from '../utils/format-date';
+import { usePromise } from '../../hooks/use-promise';
+import { BlogType } from '../../types/blog.type';
+import { formatDate } from '../../utils/format-date';
 import '../css/blog-page-styles.scss';
-import { usePromise } from '../hooks/use-promise';
-import { BlogType } from '../types/blog.type';
 import css from './BlogPage.module.scss';
 
 const BlogPage = () => {

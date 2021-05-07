@@ -1,7 +1,7 @@
 import { atom, useAtom } from 'jotai';
 import { useEffect, useLayoutEffect, useRef } from 'preact/hooks';
 
-export type Theme = 'morning' | 'noon' | 'night' | 'zombie';
+export type Theme = 'morning' | 'noon' | 'night' | 'radioactive';
 
 // This is needed here
 let isFirstUpdate = true;
@@ -37,7 +37,7 @@ export function useTheme() {
   useEffect(() => {
     localStorage.setItem('theme', theme);
 
-    document.body.classList.remove('morning', 'noon', 'twilight', 'night');
+    document.body.classList.remove('morning', 'noon', 'radioactive', 'night');
     document.body.classList.add(theme);
   }, [theme]);
 

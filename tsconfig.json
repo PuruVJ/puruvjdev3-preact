@@ -2,7 +2,7 @@
   "compileOnSave": false,
   "compilerOptions": {
     "types": ["wmr/types"],
-    "baseUrl": "./public",
+    // "baseUrl": ".",
     "jsx": "preserve",
     "jsxFactory": "preact.h",
     "jsxFragmentFactory": "preact.Fragment",

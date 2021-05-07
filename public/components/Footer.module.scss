@@ -1,0 +1,50 @@
+.footer {
+  padding: 1rem;
+
+  width: 100%;
+
+  display: flex;
+
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1rem;
+
+  .copy-area {
+    flex: 1 1 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    img {
+      height: 1em;
+      vertical-align: middle;
+    }
+  }
+
+  .social-links {
+    display: flex;
+    align-items: center;
+  }
+
+  .social-links a {
+    fill: var(--app-color-dark);
+
+    display: flex;
+    align-items: center;
+
+    transition: fill 120ms ease-out;
+
+    margin: 0 4px;
+
+    transition: transform 200ms ease-in;
+
+    &:hover,
+    &:focus-visible {
+      transform: scale(1.2);
+    }
+  }
+  @media screen and (max-width: 600px) {
+    .copy-area {
+      font-size: 0.7rem;
+    }
+  }
+}

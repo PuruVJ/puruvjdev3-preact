@@ -2,6 +2,12 @@
   display: flex;
   justify-content: space-between;
   flex-direction: row;
+
+  mark {
+    background-color: transparent;
+    color: var(--app-color-primary);
+    font-weight: 500;
+  }
 }
 
 .photoArea,
@@ -39,12 +45,6 @@
 }
 
 .main {
-  mark {
-    background-color: transparent;
-    color: var(--app-color-primary);
-    font-weight: 500;
-  }
-
   h1,
   h2 {
     line-height: 1.618;
@@ -87,11 +87,11 @@
   @media screen and (max-width: 600px) {
     .puruIntro {
       flex-direction: column-reverse;
-    }
 
-    img {
-      width: 90%;
-      height: auto;
+      img {
+        width: 90%;
+        height: auto;
+      }
     }
 
     .written {

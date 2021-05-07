@@ -1,6 +1,6 @@
 export const WavyHRSVG = () => {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="200" viewBox="0 0 160 33">
+    <svg xmlns="http://www.w3.org/2000/svg" width="200" viewBox="0 0 160 33" fill="transparent">
       <path
         style="transition: stroke var(--transition-duration) ease-in;"
         stroke="var(--app-color-primary)"

@@ -24,7 +24,7 @@
     background-color: #383a3e;
   }
 
-  :global(body.twilight) &.shadow {
+  :global(body.radioactive) &.shadow {
     background-color: #202046;
   }
 
@@ -90,7 +90,7 @@
 
     border-radius: var(--border-radius);
 
-    will-change: trasnform;
+    will-change: transform;
     transition: all 170ms ease-in;
 
     background-color: rgba(var(--color-rgb), var(--marker-opacity));

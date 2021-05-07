@@ -7,7 +7,7 @@ import { MoonSVG } from './svg/MoonSVG';
 import { SunsetSVG } from './svg/SunsetSVG';
 import css from './ThemeSwitcher.module.scss';
 
-const themes: Theme[] = ['morning', 'noon', 'night', 'zombie'];
+const themes: Theme[] = ['morning', 'noon', 'night', 'radioactive'];
 
 const dev = process.env.NODE_ENV === 'development';
 
@@ -30,7 +30,7 @@ export const ThemeSwitcher = () => {
         ? '#fff'
         : theme === 'noon'
         ? '#f9dec9'
-        : theme === 'zombie'
+        : theme === 'radioactive'
         ? '#13132A'
         : '#222428',
   });
@@ -46,7 +46,7 @@ export const ThemeSwitcher = () => {
         <>
           {theme === 'morning' && <AppIcon path={mdiWhiteBalanceSunny} />}
           {theme === 'noon' && <AppIcon path={mdiMoonFull} />}
-          {theme === 'zombie' && <SunsetSVG />}
+          {theme === 'radioactive' && <SunsetSVG />}
           {theme === 'night' && <MoonSVG />}
         </>
       )}

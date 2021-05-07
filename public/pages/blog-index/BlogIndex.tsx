@@ -1,8 +1,8 @@
 import { useHead, useLink } from 'hoofd';
 import { useEffect } from 'preact/hooks';
-import { BlogsList } from '../components/BlogsList';
-import { usePromise } from '../hooks/use-promise';
-import type { BlogType } from '../types/blog.type';
+import { BlogsList } from '../../components/BlogsList';
+import { usePromise } from '../../hooks/use-promise';
+import type { BlogType } from '../../types/blog.type';
 
 const BlogIndex = () => {
   const data = usePromise(preload, ['blog', 'root']);
