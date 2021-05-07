@@ -1,3 +1,4 @@
+import { toStatic } from 'hoofd/preact';
 import { Provider } from 'jotai';
 import { ErrorBoundary, hydrate, lazy, LocationProvider, Route, Router } from 'preact-iso';
 import { Nav } from './components/Nav';

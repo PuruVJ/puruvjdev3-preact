@@ -1,7 +1,7 @@
 import { atom, useAtom } from 'jotai';
 import { useEffect, useLayoutEffect, useRef } from 'preact/hooks';
 
-export type Theme = 'morning' | 'noon' | 'twilight' | 'night';
+export type Theme = 'morning' | 'noon' | 'night' | 'zombie';
 
 // This is needed here
 let isFirstUpdate = true;
