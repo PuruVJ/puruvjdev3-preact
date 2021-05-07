@@ -37,7 +37,7 @@ export const ThemeSwitcher = () => {
 
   useLink({
     rel: 'icon',
-    href: `/assets/icons/favicon-${dev ? 'dev' : theme}.${dev ? 'svg' : 'png'}`,
+    href: `/assets/icons/favicon-${!dev ? 'dev' : theme}.${!dev ? 'svg' : 'png'}`,
   });
 
   return (

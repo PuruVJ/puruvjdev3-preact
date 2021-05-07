@@ -24,6 +24,7 @@ export function App() {
               <Route path="/" component={Home} />
               <Route path="/blog" component={BlogIndex} />
               <Route path="/blog/:id" component={BlogPage} />
+
               <Route path="/works" component={Works} />
 
               <Route default component={NotFound} />

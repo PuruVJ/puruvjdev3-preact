@@ -4,7 +4,7 @@ import { useEffect } from 'preact/hooks';
 import { usePromise } from '../../hooks/use-promise';
 import { BlogType } from '../../types/blog.type';
 import { formatDate } from '../../utils/format-date';
-import '../css/blog-page-styles.scss';
+import '../../css/blog-page-styles.scss';
 import css from './BlogPage.module.scss';
 
 const BlogPage = () => {
