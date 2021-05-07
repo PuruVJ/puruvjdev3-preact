@@ -1,3 +1,4 @@
+import { HoofdProvider } from 'hoofd';
 import { Provider } from 'jotai';
 import { ErrorBoundary, hydrate, lazy, LocationProvider, Route, Router } from 'preact-iso';
 import { Footer } from './components/Footer';
@@ -5,7 +6,10 @@ import { Nav } from './components/Nav';
 import './css/global.scss';
 import './css/themes.scss';
 import Home from './pages/home/Home';
-import('preact/devtools');
+
+if (process.env.NODE_ENV === 'development') {
+  import('preact/devtools');
+}
 
 const BlogIndex = lazy(() => import('./pages/blog-index/BlogIndex'));
 const BlogPage = lazy(() => import('./pages/blog-page/BlogPage'));

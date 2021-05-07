@@ -1,4 +1,4 @@
-import { toStatic } from 'hoofd/preact';
+import { createDispatcher, HoofdProvider } from 'hoofd/preact';
 import { prerender as render } from 'preact-iso';
 
 let initialized = false;
@@ -19,9 +19,18 @@ export async function prerender(vnode) {
     initialized = true;
     await init();
   }
-  const res = await render(vnode);
 
-  const head = toStatic();
+  let dispatcher;
+
+  function Dispatcher({ children }) {
+    dispatcher = createDispatcher();
+    return <HoofdProvider value={dispatcher}>{children}</HoofdProvider>;
+  }
+  const res = await render(<Dispatcher>{vnode}</Dispatcher>);
+  const head = dispatcher.toStatic();
+
+  console.log(head.metas);
+
   const elements = new Set([
     ...head.links.map((props) => ({ type: 'link', props })),
     ...head.metas.map((props) => ({ type: 'meta', props })),
