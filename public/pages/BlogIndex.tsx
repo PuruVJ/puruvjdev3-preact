@@ -1,21 +1,19 @@
 import { useHead, useLink } from 'hoofd';
 import { useEffect } from 'preact/hooks';
 import { BlogsList } from '../components/BlogsList';
-import { useAsync } from '../hooks/use-async';
+import { usePromise } from '../hooks/use-promise';
 import type { BlogType } from '../types/blog.type';
 
 const BlogIndex = () => {
-  const { status, value, execute } = useAsync(preload, false);
+  const data = usePromise(preload, ['blog', 'root']);
 
   async function preload(): Promise<BlogType[]> {
-    const res = await fetch('../assets/data/blogs-list.json');
+    const res = await fetch('/assets/data/blogs-list.json');
     return await res.json();
   }
 
   useEffect(() => {
     document.body.classList.add('background');
-
-    execute();
   }, []);
 
   useHead({
@@ -49,7 +47,7 @@ const BlogIndex = () => {
   return (
     <main>
       <h1>Blog</h1>
-      {status === 'success' && <BlogsList blogsList={value} />}
+      <BlogsList blogsList={data} />
     </main>
   );
 };

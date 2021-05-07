@@ -1,3 +1,4 @@
+import 'cross-fetch';
 import { toStatic } from 'hoofd/preact';
 import { Provider } from 'jotai';
 import { ErrorBoundary, hydrate, lazy, LocationProvider, Route, Router } from 'preact-iso';
@@ -6,7 +7,10 @@ import './css/global.scss';
 import './css/themes.scss';
 import Home from './pages/Home';
 import('preact/devtools');
-import { BlogType } from './types/blog.type';
+
+// if (typeof window === 'undefined') {
+//   global.fetch = isoMorphicFetch;
+// }
 
 const BlogIndex = lazy(() => import('./pages/BlogIndex'));
 const BlogPage = lazy(() => import('./pages/BlogPage'));
@@ -35,25 +39,24 @@ export function App() {
 hydrate(<App />);
 
 export async function prerender(data) {
-  const { prerender } = await import('preact-iso');
-  const { html, links } = await prerender(<App {...data} />);
+  return (await import('./prerender')).prerender(<App {...data} />);
 
-  const { promises: fsp } = (await eval('u=>import(u)')('fs')) as typeof import('fs');
+  // const { promises: fsp } = (await eval('u=>import(u)')('fs')) as typeof import('fs');
 
-  const blogsListData: BlogType[] = JSON.parse(
-    await fsp.readFile(new URL('./assets/data/blogs-list.json', import.meta.url), 'utf-8')
-  );
-  const blogIDs = blogsListData.map(({ id }) => id);
+  // const blogsListData: BlogType[] = JSON.parse(
+  //   await fsp.readFile(new URL('./assets/data/blogs-list.json', import.meta.url), 'utf-8')
+  // );
+  // const blogIDs = blogsListData.map(({ id }) => id);
 
-  for (let blogID of blogIDs) {
-    links.add(`/blog/${blogID.replace('.json', '')}`);
-  }
+  // for (let blogID of blogIDs) {
+  //   links.add(`/blog/${blogID.replace('.json', '')}`);
+  // }
 
-  const head = toStatic();
-  const elements = new Set([
-    ...head.links.map((props) => ({ type: 'link', props })),
-    ...head.metas.map((props) => ({ type: 'meta', props })),
-  ]);
+  // const head = toStatic();
+  // const elements = new Set([
+  //   ...head.links.map((props) => ({ type: 'link', props })),
+  //   ...head.metas.map((props) => ({ type: 'meta', props })),
+  // ]);
 
-  return { html, links, head: { title: head.title, lang: head.lang, elements } };
+  // return { html, links, head: { title: head.title, lang: head.lang, elements } };
 }

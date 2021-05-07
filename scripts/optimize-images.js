@@ -159,7 +159,9 @@ try {
 }
 function markup(list, format) {
   return `
-  <figure style="width: 100%;padding-top: ${list.aspectHTW * 100}%;">
+  <figure style="width: 100%;padding-top: ${
+    list.aspectHTW * 100
+  }%;background-color: var(--app-color-primary)">
     <picture>
       <source
         type="image/${format}"

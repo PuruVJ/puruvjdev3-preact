@@ -42,10 +42,14 @@ export const ThemeSwitcher = () => {
 
   return (
     <button class={css.button} aria-label={themes[currentThemeIndex]} onClick={nextTheme}>
-      {theme === 'morning' && <AppIcon path={mdiWhiteBalanceSunny} />}
-      {theme === 'noon' && <AppIcon path={mdiMoonFull} />}
-      {theme === 'twilight' && <SunsetSVG />}
-      {theme === 'night' && <MoonSVG />}
+      {typeof window !== 'undefined' && (
+        <>
+          {theme === 'morning' && <AppIcon path={mdiWhiteBalanceSunny} />}
+          {theme === 'noon' && <AppIcon path={mdiMoonFull} />}
+          {theme === 'twilight' && <SunsetSVG />}
+          {theme === 'night' && <MoonSVG />}
+        </>
+      )}
     </button>
   );
 };

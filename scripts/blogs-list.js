@@ -65,6 +65,8 @@ const { readdir, readFile, writeFile } = promises;
       seriesIndex = seriesPosts.findIndex(({ id }) => id === fileName) + 1;
     }
 
+    console.log(title);
+
     // Let's push
     published &&
       finaldata.push({
