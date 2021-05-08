@@ -20,11 +20,11 @@ And the fun part is, you won't need to install any VSCode extensions for this.
 
 3. **Grit and Debugging skills 😉** - Well, it is a prerequisite for writing every single line of code as a dev, donchya agree?
 
-Let's begin.
+# The best way
 
-# Steps
+Here's the best and most optimal way to set this up
 
-## Install <mark>typescript-plugin-css-modules</mark> from npm
+## <mark>npm install typescript-plugin-css-modules</mark>
 
 Install this little npm package, preferably as a `devDependency` (-D).
 
