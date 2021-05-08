@@ -152,11 +152,12 @@ export async function optimizeBlogImages(src, returnMarkup = true) {
   return returnMarkup ? markup(list, format) : list;
 }
 
-try {
-  optimizeBlogImages('../../static/media/deep-dive-preact-source--wait-what.gif', false);
-} catch (e) {
-  console.log(e);
-}
+// try {
+//   optimizeBlogImages('../../static/media/deep-dive-preact-source--wait-what.gif', false);
+// } catch (e) {
+//   console.log(e);
+// }
+
 function markup(list, format) {
   return `
   <figure style="width: 100%;padding-top: ${
