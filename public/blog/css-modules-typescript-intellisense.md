@@ -8,9 +8,9 @@ Are you a TypeScript user, who's using CSS modules and ever ran into this little
 
 After going through this article, you'll have this super sweet intellisense like shown below 👇
 
-![](../assets/media/css-modules-typescript-intellisense--intellisense-demo.gif)
+![Demo of CSS Modules autocompletion](../assets/media/css-modules-typescript-intellisense--intellisense-demo.gif)
 
-And the fun part is, you won't need to install any VSCode extension
+And the fun part is, you won't need to install any VSCode extensions for this.
 
 # Prerequisites
 
@@ -19,3 +19,21 @@ And the fun part is, you won't need to install any VSCode extension
 2. **Locally installed TypeScript** - There must be TypeScript locally installed and present in your `package.json` (Preferably the latest version 😁)
 
 3. **Grit and Debugging skills 😉** - Well, it is a prerequisite for writing every single line of code as a dev, donchya agree?
+
+Let's begin.
+
+# Steps
+
+## Install <mark>typescript-plugin-css-modules</mark> from npm
+
+Install this little npm package, preferably as a `devDependency` (-D).
+
+```sh
+npm i --save-dev typescript-plugin-css-modules
+
+# Or if you're a yarn person
+
+yarn add --save-dev typescript-plugin-css-modules
+```
+
+> And yeah, in case you were wondering, TypeScript does have its own plugin architechture. Even I found it a month back, [when I moved a project of mine to CSS Modules from Styled Components](https://puruvj.dev/blog/move-to-css-modules-from-styled-components) 😅
