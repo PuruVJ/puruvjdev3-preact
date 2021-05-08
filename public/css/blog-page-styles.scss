@@ -115,9 +115,15 @@ code {
   }
 
   figure {
+    --bgcolor: var(--app-color-primary);
+
+    padding-top: var(--padding-top);
     margin: 0;
+
     position: relative;
     border-radius: 0.5rem;
+
+    background-color: var(--bgcolor);
 
     picture {
       border-radius: inherit;
@@ -125,6 +131,7 @@ code {
 
     img {
       width: 100%;
+
       position: absolute;
       height: auto;
       top: 0;

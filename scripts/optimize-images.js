@@ -160,9 +160,7 @@ export async function optimizeBlogImages(src, returnMarkup = true) {
 
 function markup(list, format) {
   return `
-  <figure style="width: 100%;padding-top: ${
-    list.aspectHTW * 100
-  }%;background-color: var(--app-color-primary)">
+  <figure style="width: 100%;--padding-top: ${list.aspectHTW * 100}%;">
     <picture>
       <source
         type="image/${format}"
