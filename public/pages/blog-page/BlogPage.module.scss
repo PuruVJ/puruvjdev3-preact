@@ -33,6 +33,8 @@
 
       transform: scaleX(0);
       transform-origin: 0 0;
+
+      translate: transform 20ms ease-in 0s;
     }
   }
 
