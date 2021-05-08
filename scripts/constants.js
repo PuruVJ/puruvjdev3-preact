@@ -1,5 +1,3 @@
-// @ts-check
-
 /** Where the MarkDown posts are located */
 export const BLOG_POSTS_MD_PATH = '../public/blog/';
 

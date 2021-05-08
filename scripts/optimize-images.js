@@ -1,24 +1,8 @@
-// @ts-check
-import _cloudinary from 'cloudinary';
-import dotenv from 'dotenv';
-import fs from 'fs';
+import { promises as fsp } from 'fs';
 import fetch from 'node-fetch';
+import { cloudinary } from './cloudinary.js';
 import { ASSETS_ROOT_PATH, RELATIVE_ASSETS_PATH } from './constants.js';
 import { gifMarkup, optimizeGif } from './gif-module.js';
-
-const { access, mkdir, readdir, readFile, writeFile } = fs.promises;
-
-dotenv.config({
-  path: '../.env',
-});
-
-const cloudinary = _cloudinary.v2;
-
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_SECRET_KEY,
-});
 
 /**
  * Optimize the image and create its different versions
@@ -38,7 +22,10 @@ export async function optimizeBlogImages(src, returnMarkup = true) {
   const [format] = filePath.split('.').reverse();
   const folderPath = `${ASSETS_ROOT_PATH}/${baseFolder}/${fileName}`;
 
-  // The list of file paths to return
+  /**
+   * The list of file paths to return
+   * @type {import('./scripts.js').ExportedImagesMetaData}
+   */
   const list = {
     large: {
       org: `${RELATIVE_ASSETS_PATH}/${baseFolder}/${fileName}/large.${format}`,
@@ -53,12 +40,16 @@ export async function optimizeBlogImages(src, returnMarkup = true) {
 
   // Check if this folder exists
   try {
-    await access(folderPath);
+    await fsp.access(folderPath);
     shouldOptimize = false;
 
-    if (!shouldOptimize && (await readdir(folderPath)).includes('data.json') && format !== 'gif') {
+    if (
+      !shouldOptimize &&
+      (await fsp.readdir(folderPath)).includes('data.json') &&
+      format !== 'gif'
+    ) {
       // The data file exists. Get the aspect ratio from there
-      const { aspectHTW } = JSON.parse(await readFile(`${folderPath}/data.json`, 'utf-8'));
+      const { aspectHTW } = JSON.parse(await fsp.readFile(`${folderPath}/data.json`, 'utf-8'));
 
       list.aspectHTW = aspectHTW;
     }
@@ -87,7 +78,7 @@ export async function optimizeBlogImages(src, returnMarkup = true) {
   // The image is optimizable. That means work, boys!
   // Let's try make the folder
   try {
-    await mkdir(`${ASSETS_ROOT_PATH}/${baseFolder}/${fileName}`);
+    await fsp.mkdir(`${ASSETS_ROOT_PATH}/${baseFolder}/${fileName}`);
   } catch (e) {}
 
   const bigOriginalP = cloudinary.uploader.upload(`${folderPath}.${format}`, {
@@ -133,11 +124,11 @@ export async function optimizeBlogImages(src, returnMarkup = true) {
   list.aspectHTW = bigOriginal.height / bigOriginal.width;
 
   // Write inside the folder
-  await writeFile(`${folderPath}/large.${format}`, bigOriginalBuffer);
-  await writeFile(`${folderPath}/small.${format}`, smallOriginalBuffer);
+  await fsp.writeFile(`${folderPath}/large.${format}`, bigOriginalBuffer);
+  await fsp.writeFile(`${folderPath}/small.${format}`, smallOriginalBuffer);
 
   // Also write the data.json
-  await writeFile(
+  await fsp.writeFile(
     `${folderPath}/data.json`,
     JSON.stringify({
       aspectHTW: list.aspectHTW,
@@ -158,6 +149,10 @@ export async function optimizeBlogImages(src, returnMarkup = true) {
 //   console.log(e);
 // }
 
+/**
+ * @param {import('./scripts.js').ExportedImagesMetaData} list
+ * @param {string} format
+ */
 function markup(list, format) {
   return `
   <figure style="width: 100%;--padding-top: ${list.aspectHTW * 100}%;">
