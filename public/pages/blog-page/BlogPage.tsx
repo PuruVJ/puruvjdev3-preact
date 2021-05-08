@@ -1,29 +1,41 @@
 import { useHead, useLink } from 'hoofd';
 import { useLocation } from 'preact-iso';
-import { useEffect } from 'preact/hooks';
+import { useEffect, useState } from 'preact/hooks';
+import '../../css/blog-page-styles.scss';
 import { usePromise } from '../../hooks/use-promise';
 import { BlogType } from '../../types/blog.type';
 import { formatDate } from '../../utils/format-date';
-import '../../css/blog-page-styles.scss';
 import css from './BlogPage.module.scss';
+
+async function preload(slug: string): Promise<BlogType> {
+  const res = await fetch(`/assets/blog/${slug}.json`);
+  return await res.json();
+}
 
 const BlogPage = () => {
   const loc = useLocation();
 
   const slug = loc.path.split('/').reverse()[0];
 
-  const data = usePromise(preload, ['blog', slug]);
+  const data = usePromise(() => preload(slug), ['blog', slug]);
   const { id, body, series, title, date, reading_time, description, cover_image } = data;
 
   const browserTitle = title.replace(/<img.*?alt="(.*?)"[^\>]+>/g, '$1');
 
-  async function preload(): Promise<BlogType> {
-    const res = await fetch(`/assets/blog/${slug}.json`);
-    return await res.json();
+  // Reading progress
+  const [readingProgress, setReadingProgress] = useState(0);
+
+  function handleProgressBar() {
+    let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const currentY = document.documentElement.scrollTop;
+
+    setReadingProgress(currentY / height);
   }
 
   useEffect(() => {
     document.body.classList.remove('background');
+
+    document.addEventListener('scroll', handleProgressBar);
 
     import('lazysizes');
   }, []);
@@ -59,7 +71,7 @@ const BlogPage = () => {
   return (
     <main class={css.main}>
       <div class={css.progress} aria-roledescription="progress">
-        <div class={css.indicator} style="transform: scaleX({$readingProgress})" />
+        <div class={css.indicator} style={{ transform: `scaleX(${readingProgress})` }} />
       </div>
       <span class={css.series}>
         {series && (

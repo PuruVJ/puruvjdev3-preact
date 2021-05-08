@@ -1,12 +1,12 @@
-import { useEffect } from 'preact/hooks';
 import { useHead } from 'hoofd/preact';
-import css from './Home.module.scss';
-import { WavyHRSVG } from '../../components/svg/WavyHRSVG';
-import { ContactMeSVG } from '../../components/svg/ContactMeSvg';
+import { useEffect } from 'preact/hooks';
 import { BlogsList } from '../../components/BlogsList';
-import { BlogType } from '../../types/blog.type';
-import { usePromise } from '../../hooks/use-promise';
 import { ContactMeLink } from '../../components/ContactMeLink';
+import { ContactMeSVG } from '../../components/svg/ContactMeSvg';
+import { WavyHRSVG } from '../../components/svg/WavyHRSVG';
+import { usePromise } from '../../hooks/use-promise';
+import { BlogType } from '../../types/blog.type';
+import css from './Home.module.scss';
 
 export default function Home() {
   const blogsList = usePromise(preload, ['homepage-blogs']);
@@ -43,8 +43,6 @@ export default function Home() {
   });
 
   useEffect(() => {
-    import('lazysizes');
-
     document.body.classList.add('background', 'animated');
   }, []);
 
