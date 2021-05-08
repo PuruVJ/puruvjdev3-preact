@@ -1,5 +1,5 @@
 ---
-title: Get the most out of CSS Modules with TypeScript
+title: Get the most out of CSS Modules with TypeScript in 5 minutes
 description: If you're a TypeScript Dev, here are a few things you can do to get that sweet, sweet CSS class intellisense
 date: 14 May, 2021
 ---
@@ -36,4 +36,32 @@ npm i --save-dev typescript-plugin-css-modules
 yarn add --save-dev typescript-plugin-css-modules
 ```
 
-> And yeah, in case you were wondering, TypeScript does have its own plugin architechture. Even I found it a month back, [when I moved a project of mine to CSS Modules from Styled Components](https://puruvj.dev/blog/move-to-css-modules-from-styled-components) 😅
+> And yeah, in case you were wondering, TypeScript does have its own plugin architecture. Heck, I myself found it only a month back, [when I moved a project of mine to CSS Modules from Styled Components](https://puruvj.dev/blog/move-to-css-modules-from-styled-components) 😅.
+
+## Add to tsconfig.json
+
+Open up your `tsconfig.json`, and add to the `compilerOptions` property this one liner:
+
+```json
+"plugins": [{ "name": "typescript-plugin-css-modules" }]
+```
+
+## Set VSCode TypeScript version
+
+This one is superrrrrr important. The TypeScript version your VSCode uses should be the local version(The one installed in your project locally), otherwise this whole song and dance of installing plugins and setting config will be worthless.
+
+Open a `.ts` or `.tsx` file in VSCode, On bottom left you'll see this little option 👇
+
+![TypeScript version number in VSCode](../assets/media/css-modules-typescript-intellisense--typescript-version-photo-1.png)
+
+This is your TypeScript version. Click on it, and a list popup will open on the very top 👇
+
+![The list popup](../assets/media/css-modules-typescript-intellisense--typescript-version-photo-2.png)
+
+Click on <mark>Select TypeScript Version</mark>. That will show these options 👇
+
+![Version choosing list](../assets/media/css-modules-typescript-intellisense--typescript-version-photo-3.png)
+
+As you can see, I have <mark>Use VS Code's Version</mark> selected(Look at the white dot before). Click on <mark>Use Workspace Version</mark>, and you are all set.
+
+Enjoy the amazing Intellisense 😀

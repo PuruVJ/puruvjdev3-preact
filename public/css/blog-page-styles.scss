@@ -104,6 +104,10 @@ code {
     font-family: 'JetBrains Mono', monospace;
     border-radius: 0 8px 8px 0;
     background-color: rgba(var(--app-color-dark-rgb), 0.05);
+
+    a[href] {
+      font-weight: 500 !important;
+    }
   }
 
   .picture-container {
@@ -163,6 +167,7 @@ code {
       background-position: 0 100%;
 
       color: var(--app-color-primary-contrast);
+      font-weight: 600 !important;
 
       border-radius: 0.25rem;
 
