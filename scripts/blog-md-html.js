@@ -15,7 +15,7 @@ import { ASSETS_ROOT_PATH, BLOG_POSTS_MD_PATH, RELATIVE_ASSETS_PATH } from './co
 (async () => {
   // Shiki instance
   const highlighter = await getHighlighter({
-    theme: 'material-theme-palenight',
+    theme: JSON.parse(await fsp.readFile('./theme.json', 'utf-8')),
   });
 
   // Prepare md for shiki
@@ -134,9 +134,7 @@ import { ASSETS_ROOT_PATH, BLOG_POSTS_MD_PATH, RELATIVE_ASSETS_PATH } from './co
     ({ document } = await headingsWithAnchorsPlugin(document, fileName));
 
     if (series) {
-      /**
-       * @type {Array}
-       */
+      /** @type {Array}*/
       let seriesPostsList = seriesList[series].sort((p1, p2) => p1.date - p2.date);
 
       ({ document } = await seriesLinksPlugin(document, seriesPostsList, series, fileName));

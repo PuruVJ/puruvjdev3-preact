@@ -2,7 +2,8 @@ import { promises as fsp } from 'fs';
 import fetch from 'node-fetch';
 import { cloudinary } from './cloudinary.js';
 import { ASSETS_ROOT_PATH, RELATIVE_ASSETS_PATH } from './constants.js';
-import { gifMarkup, optimizeGif } from './gif-module.js';
+import { optimizeGif } from './gif-module.js';
+import { imageMarkup, gifMarkup } from './markup.js';
 
 /**
  * Optimize the image and create its different versions
@@ -67,7 +68,7 @@ export async function optimizeBlogImages(src, returnMarkup = true) {
     // Log the time
     console.log(`Finished.`);
     console.log();
-    return returnMarkup ? markup(list, format) : list;
+    return returnMarkup ? imageMarkup(list, format) : list;
   }
 
   // Optimize if GIF
@@ -106,7 +107,7 @@ export async function optimizeBlogImages(src, returnMarkup = true) {
   const fetchImg = (path) => fetch(path).then((res) => res.buffer());
 
   const [bigOriginal, smallOriginal] = await Promise.all([upload(1200), upload(600)]);
-  const [bigOriginalBfr, smallOriginalBfr] = await Promise.all([
+  const [bigOriginalBuffer, smallOriginalBuffer] = await Promise.all([
     fetchImg(bigOriginal.url),
     fetchImg(smallOriginal.url),
   ]);
@@ -115,8 +116,8 @@ export async function optimizeBlogImages(src, returnMarkup = true) {
   list.aspectHTW = bigOriginal.height / bigOriginal.width;
 
   // Write inside the folder
-  await fsp.writeFile(`${folderPath}/large.${format}`, bigOriginalBfr);
-  await fsp.writeFile(`${folderPath}/small.${format}`, smallOriginalBfr);
+  await fsp.writeFile(`${folderPath}/large.${format}`, bigOriginalBuffer);
+  await fsp.writeFile(`${folderPath}/small.${format}`, smallOriginalBuffer);
 
   // Also write the data.json
   await fsp.writeFile(
@@ -131,37 +132,7 @@ export async function optimizeBlogImages(src, returnMarkup = true) {
   console.log();
 
   // Return the list
-  return returnMarkup ? markup(list, format) : list;
+  return returnMarkup ? imageMarkup(list, format) : list;
 }
 
-// try {
 //   optimizeBlogImages('../../static/media/deep-dive-preact-source--wait-what.gif', false);
-// } catch (e) {
-//   console.log(e);
-// }
-
-/**
- * @param {import('./scripts.js').ExportedImagesMetaData} list
- * @param {string} format
- */
-function markup(list, format) {
-  return `
-  <figure style="width: 100%;--padding-top: ${list.aspectHTW * 100}%;">
-    <picture>
-      <source
-        type="image/${format}"
-        media="(min-width: 501px)"
-        data-srcset="${list.large.org}"
-      ></source>
-      <source
-        type="image/${format}"
-        media="(max-width: 500px)"
-        data-srcset="${list.small.org}"
-      ></source>
-      <img alt="Placeholder"
-      data-src="${list.large.org}"
-      class="lazyload blog-img" />
-    </picture>
-  </figure>
-  `;
-}
