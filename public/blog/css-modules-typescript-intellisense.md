@@ -1,7 +1,8 @@
----
+`---
 title: Get the most out of CSS Modules with TypeScript in 5 minutes
 description: If you're a TypeScript Dev, here are a few things you can do to get that sweet, sweet CSS class intellisense
 date: 14 May, 2021
+
 ---
 
 Are you a TypeScript user, who's using CSS modules and ever ran into this little problem where you type `styles.` and expect the list of classes to show up in your VSCode intellisense, but it doesn't?
@@ -115,3 +116,17 @@ Though OFC, it only works on plain CSS files, not `SCSS` or `SASS` or `STYL`. Pl
 Its again a CLI and inspired from `typed-css-modules` CLI: [typed-scss-modules](https://github.com/skovy/typed-scss-modules). Its a really good tool.
 
 > This approach is good, but the biggest drawback I see is the d.ts files generated. it sort off clutters your workspace and Git commits.
+
+## Manually
+
+The last method is manually adding in the typings yourselves.
+
+God forbid if you have to resort to this! 😱😱
+
+It involves making a `d.ts` file next to your CSS modules file, and defining modules and putting in the class names yourselves. Its a really bad method. If you add a class to you CSS module, you have to add it to the `d.ts` too. If you change something, and the project is too big, you're basically screwed, cuz you won't remember to change it in the d.ts most probably.
+
+# Conclusion
+
+I hope you found this article to be helpful. Turning on intellisense for CSS modules has been a total gamechanger for me in terms of how my component and the CSS interact.
+
+Signing off!
