@@ -1,8 +1,7 @@
-s---
+---
 title: Get the most out of CSS Modules with TypeScript in 5 minutes
 description: If you're a TypeScript Dev, here are a few things you can do to get that sweet, sweet CSS class intellisense
 date: 14 May, 2021
-
 ---
 
 Are you a TypeScript user, who's using CSS modules and ever ran into this little problem where you type `styles.` and expect the list of classes to show up in your VSCode intellisense, but it doesn't?
