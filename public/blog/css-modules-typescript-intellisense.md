@@ -1,4 +1,4 @@
-`---
+s---
 title: Get the most out of CSS Modules with TypeScript in 5 minutes
 description: If you're a TypeScript Dev, here are a few things you can do to get that sweet, sweet CSS class intellisense
 date: 14 May, 2021
