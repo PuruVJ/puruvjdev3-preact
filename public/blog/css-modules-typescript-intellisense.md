@@ -20,9 +20,17 @@ And the fun part is, you won't need to install any VSCode extensions for this.
 
 3. **Grit and Debugging skills 😉** - Well, it is a prerequisite for writing every single line of code as a dev, donchya agree?
 
-# The best way
+# The Best Way
 
-Here's the best and most optimal way to set this up
+This is the best and most optimal method here. It is really fast, feels native, as if TypeScript itself knows about your CSS Modules, and doesn't clutter your workspace with `d.ts` files. It just works!!
+
+And the best part: Because it's just an npm package, and because the tsconfig is there, anyone else(team member/collaborator) will have the same experience as you out of the box, without any config. No need for them to download any extension, just the plain old `npm install` will do it for them.
+
+Magic!!!
+
+![Magic](../assets/media/css-modules-typescript-intellisense--magic.gif)
+
+Here's how to set it up 👇
 
 ## <mark>npm install typescript-plugin-css-modules</mark>
 
@@ -64,4 +72,46 @@ Click on <mark>Select TypeScript Version</mark>. That will show these options �
 
 As you can see, I have <mark>Use VS Code's Version</mark> selected(Look at the white dot before). Click on <mark>Use Workspace Version</mark>, and you are all set.
 
-Enjoy the amazing Intellisense 😀
+And here's your setup. In less than 5 minutes. Super simple, right?
+
+Enjoy the amazing DX 😀.
+
+> Oh, and in case you were wondering, it works perfectly with Sass too 😉
+
+# Honorable Mentions
+
+Here are some more methods that are... OK, I guess 😅. I used these, and they weren't as good as the technique above.
+
+## VSCode extension
+
+So, there are a few VSCode extensions out there that provide similar level of intellisense. Notice I used the word **similar**, not same, because
+
+1. They were a little slower - They slowed down VSCode a little bit. On my fast laptop, it negligible, but on my other older laptop, it was noticeably slow.
+
+2. Choppy Intellisense - The intellisense wasn't always accurate, and sometimes had some noise in it like units(`9px`, `3rem`) when you typed `styles.`, which was definitely a bit weird.
+
+3. I dislike extensions - I am an extreme minimalist. My hunger to reduce things and have only the things **necessary** is super big. I only have 7 VSCode extensions, and only 2-3 are enabled for each workspace at a time. I worked on a super old and slow computer for 4 years, so it's habit to keep these 3rd party things as low as possible(even though I'm on a super fast one now 😅)
+
+But still, this extension is good enough if you can't get <mark>The Best Method</mark> above working.
+
+Oh, and as for the **extension** itself, I won't drop a link. There are so many coming out and some are better, some aren't, and its in constant flux. It's recommended to just do a search. The keywords: <mark>CSS Modules</mark> should give good results.
+
+## `typings-for-css-modules-loader`
+
+This is a <mark>Webpack</mark>-only loader. This will do the trick too.
+
+As I have no experience in Webpack, I can't explain the usage. I recommend you to check out the documentation @ [NPM](https://www.npmjs.com/package/typings-for-css-modules-loader)
+
+## The CLI
+
+There's a CLI out there that will generate `d.ts` files for your CSS modules. Check it out here: [typed-css-modules](https://github.com/Quramy/typed-css-modules).
+
+It has a watch mode, so you won't have to run it again everytime you edit your CSS files. Thats handy.
+
+Though OFC, it only works on plain CSS files, not `SCSS` or `SASS` or `STYL`. Plus there's that hiccup of remembering to run this command in a parallel terminal, or using a script to turn it on automatically along with your Web server.
+
+### For Sass
+
+Its again a CLI and inspired from `typed-css-modules` CLI: [typed-scss-modules](https://github.com/skovy/typed-scss-modules). Its a really good tool.
+
+> This approach is good, but the biggest drawback I see is the d.ts files generated. it sort off clutters your workspace and Git commits.
