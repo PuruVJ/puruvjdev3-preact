@@ -19,3 +19,9 @@ export type Work = {
   };
   image: ExportedImagesMetaData;
 };
+
+export function optimizeBlogImages(src: string, returnMarkup: true): Promise<string>;
+export function optimizeBlogImages(
+  src: string,
+  returnMarkup: false
+): Promise<ExportedImagesMetaData>;

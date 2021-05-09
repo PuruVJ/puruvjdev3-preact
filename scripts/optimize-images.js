@@ -13,14 +13,23 @@ export async function optimizeBlogImages(src, returnMarkup = true) {
   // Start measuring
   console.log('Starting to retrieve/create image/data');
 
-  // First off, don't optimize this image and save us some CPU time if it
-  // already exists
+  // First off, don't optimize this image and save us some CPU time if it already exists
   // First get the filename
   const [filePath, baseFolder] = src.split('/').reverse();
   const [fileName] = filePath.split('.');
 
   const [format] = filePath.split('.').reverse();
+
+  /*
+   * The vars are of this pattern:
+   * /{baseFolder}/{fileName}.{format}
+   */
+
   const folderPath = `${ASSETS_ROOT_PATH}/${baseFolder}/${fileName}`;
+
+  /** @param {'large' | 'small'} size */
+  const getOrgPath = (size) =>
+    `${RELATIVE_ASSETS_PATH}/${baseFolder}/${fileName}/${size}.${format}`;
 
   /**
    * The list of file paths to return
@@ -28,10 +37,10 @@ export async function optimizeBlogImages(src, returnMarkup = true) {
    */
   const list = {
     large: {
-      org: `${RELATIVE_ASSETS_PATH}/${baseFolder}/${fileName}/large.${format}`,
+      org: getOrgPath('large'),
     },
     small: {
-      org: `${RELATIVE_ASSETS_PATH}/${baseFolder}/${fileName}/small.${format}`,
+      org: getOrgPath('small'),
     },
     aspectHTW: 1,
   };
@@ -43,17 +52,13 @@ export async function optimizeBlogImages(src, returnMarkup = true) {
     await fsp.access(folderPath);
     shouldOptimize = false;
 
-    if (
-      !shouldOptimize &&
-      (await fsp.readdir(folderPath)).includes('data.json') &&
-      format !== 'gif'
-    ) {
+    if ((await fsp.readdir(folderPath)).includes('data.json') && format !== 'gif') {
       // The data file exists. Get the aspect ratio from there
       const { aspectHTW } = JSON.parse(await fsp.readFile(`${folderPath}/data.json`, 'utf-8'));
 
       list.aspectHTW = aspectHTW;
     }
-  } catch (e) {}
+  } catch {}
 
   // The markup
 
@@ -81,51 +86,37 @@ export async function optimizeBlogImages(src, returnMarkup = true) {
     await fsp.mkdir(`${ASSETS_ROOT_PATH}/${baseFolder}/${fileName}`);
   } catch (e) {}
 
-  const bigOriginalP = cloudinary.uploader.upload(`${folderPath}.${format}`, {
-    format,
-    folder: 'media',
-    transformation: [
-      {
-        quality: 80,
-        width: 1200,
-        crop: 'scale',
-      },
-    ],
-    use_filename: true,
-    overwrite: true,
-  });
+  /** @param {number} width */
+  const upload = (width) =>
+    cloudinary.uploader.upload(`${folderPath}.${format}`, {
+      format,
+      folder: 'media',
+      transformation: [
+        {
+          quality: 80,
+          width,
+          crop: 'scale',
+        },
+      ],
+      use_filename: true,
+      overwrite: true,
+    });
 
-  const smallOriginalP = cloudinary.uploader.upload(`${folderPath}.${format}`, {
-    format,
-    folder: 'media',
-    transformation: [
-      {
-        quality: 80,
+  /** @param {string} path */
+  const fetchImg = (path) => fetch(path).then((res) => res.buffer());
 
-        width: 600,
-        crop: 'scale',
-      },
-    ],
-    use_filename: true,
-    overwrite: true,
-  });
-
-  const [bigOriginal, smallOriginal] = await Promise.all([bigOriginalP, smallOriginalP]);
-
-  const bigOriginalBufferP = fetch(bigOriginal.url).then((res) => res.buffer());
-  const smallOriginalBufferP = fetch(smallOriginal.url).then((res) => res.buffer());
-
-  const [bigOriginalBuffer, smallOriginalBuffer] = await Promise.all([
-    bigOriginalBufferP,
-    smallOriginalBufferP,
+  const [bigOriginal, smallOriginal] = await Promise.all([upload(1200), upload(600)]);
+  const [bigOriginalBfr, smallOriginalBfr] = await Promise.all([
+    fetchImg(bigOriginal.url),
+    fetchImg(smallOriginal.url),
   ]);
 
   // get aspect ratio
   list.aspectHTW = bigOriginal.height / bigOriginal.width;
 
   // Write inside the folder
-  await fsp.writeFile(`${folderPath}/large.${format}`, bigOriginalBuffer);
-  await fsp.writeFile(`${folderPath}/small.${format}`, smallOriginalBuffer);
+  await fsp.writeFile(`${folderPath}/large.${format}`, bigOriginalBfr);
+  await fsp.writeFile(`${folderPath}/small.${format}`, smallOriginalBfr);
 
   // Also write the data.json
   await fsp.writeFile(
