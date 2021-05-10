@@ -1,12 +1,12 @@
 import { useHead, useLink } from 'hoofd';
 import { useLocation } from 'preact-iso';
+import { memo } from 'preact/compat';
 import { useEffect, useState } from 'preact/hooks';
 import '../../css/blog-page-styles.scss';
 import { usePromise } from '../../hooks/use-promise';
 import { BlogType } from '../../types/blog.type';
 import { formatDate } from '../../utils/format-date';
 import css from './BlogPage.module.scss';
-import { memo } from 'preact/compat';
 
 async function preload(slug: string): Promise<BlogType> {
   const res = await fetch(`/assets/blog/${slug}.json`);
