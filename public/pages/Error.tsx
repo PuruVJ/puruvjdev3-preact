@@ -1,4 +1,4 @@
-import { useTitle } from 'hoofd';
+import { useTitle } from 'hoofd/preact';
 import { NotFoundSVG } from '../components/svg/NotFoundSVG';
 import css from './Error.module.scss';
 

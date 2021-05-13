@@ -1,4 +1,4 @@
-import { useHead, useLink } from 'hoofd';
+import { useHead, useLink } from 'hoofd/preact';
 import { useLocation } from 'preact-iso';
 import { memo } from 'preact/compat';
 import { useEffect, useState } from 'preact/hooks';

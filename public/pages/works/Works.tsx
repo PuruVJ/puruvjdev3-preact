@@ -1,5 +1,5 @@
 import { mdiGithub, mdiWeb } from '@mdi/js';
-import { useTitle } from 'hoofd';
+import { useTitle } from 'hoofd/preact';
 import { useEffect } from 'preact/hooks';
 import { AppIcon } from '../../components/AppIcon';
 import { usePromise } from '../../hooks/use-promise';

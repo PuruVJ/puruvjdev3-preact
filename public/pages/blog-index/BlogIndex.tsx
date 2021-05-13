@@ -1,4 +1,4 @@
-import { useHead, useLink } from 'hoofd';
+import { useHead, useLink } from 'hoofd/preact';
 import { useEffect } from 'preact/hooks';
 import { BlogsList } from '../../components/BlogsList';
 import { usePromise } from '../../hooks/use-promise';
