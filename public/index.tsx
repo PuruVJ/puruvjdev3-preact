@@ -1,4 +1,3 @@
-import { HoofdProvider } from 'hoofd';
 import { Provider } from 'jotai';
 import { ErrorBoundary, hydrate, lazy, LocationProvider, Route, Router } from 'preact-iso';
 import { Footer } from './components/Footer';
