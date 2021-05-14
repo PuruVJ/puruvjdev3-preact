@@ -203,7 +203,29 @@ Let's make it flat 👇
 }
 ```
 
-Now, lets assume that this file is named `Card.module.css`
+Now, lets assume that this file is named `Card.module.css`, and the component we saw above is named `Card.tsx`(Or `Card.js` or `Card.jsx`. Depends on your personal preference. Me, I'm a TypeScript guy 🙃)
+
+So here's how you would use these styles in that file
+
+```js
+import css from './Card.module.css';
+
+export const Card = () => {
+  return (
+    <section className={css.card}>
+      <img className={css.avatar} src="..." />
+      <div className={css.info}>
+        <div className={css.title}>...</div>
+        <div className={css.description}>...</div>
+      </div>
+    </section>
+  );
+};
+```
+
+> If your mind is going crazy looking at this, I understand. Happened to all of us when we first looked at CSS modules 😄
+
+So, as you can see, I'm importing the ``
 
 # CSS in JS
 
