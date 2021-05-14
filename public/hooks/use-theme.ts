@@ -23,25 +23,19 @@ export function useTheme() {
   if (typeof window === 'undefined') return [theme, setTheme] as const;
 
   useLayoutEffect(() => {
-    if (isFirstUpdate) {
-      // @ts-expect-error
-      if (localValue === 'light') {
-        localValue = 'morning';
-      }
+    if (!isFirstUpdate) return;
 
-      // @ts-expect-error
-      if (localValue === 'midday') {
-        localValue = 'noon';
-      }
+    // @ts-expect-error
+    if (localValue === 'light') localValue = 'morning';
 
-      // @ts-expect-error
-      if (localValue === 'dark') {
-        localValue = 'night';
-      }
+    // @ts-expect-error
+    if (localValue === 'midday') localValue = 'noon';
 
-      setTheme(localValue || systemTheme);
-      isFirstUpdate = false;
-    }
+    // @ts-expect-error
+    if (localValue === 'dark') localValue = 'night';
+
+    setTheme(localValue || systemTheme);
+    isFirstUpdate = false;
   }, []);
 
   /**

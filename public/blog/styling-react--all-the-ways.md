@@ -56,16 +56,39 @@ And finally, some modifiers to change the look of the **Block** 👇
 
 1. The HTML and CSS can turn horribly messy with these huge names, like this 👇
 
-```html
-<a class="btn btn--big btn--orange" href="https://css-tricks.com">
-  <span class="btn__price">$9.99</span>
-  <span class="btn__text">Subscribe</span>
-</a>
+```js
+export const Card = () => {
+  return (
+    <section className="card">
+      <img className="card__avatar" src="..." />
+      <div className="card__info">
+        <div className="card__info__title">...</div>
+        <div className="card__info__description">...</div>
+      </div>
+    </section>
+  );
+};
 ```
 
 (This still looks **OK**, but when your app grows and there are much more elements in it, things will become messy)
 
-## SCSS
+## SCSS (& SASS)
+
+SCSS is the next best thing really. Say you have this little component 👇
+
+```js
+export const Card = () => {
+  return (
+    <section className="container">
+      <img className="avatar" src="..." />
+      <div className="info">
+        <div className="title">...</div>
+        <div className="description">...</div>
+      </div>
+    </section>
+  );
+};
+```
 
 ## CSS Modules
 
