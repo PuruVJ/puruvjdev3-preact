@@ -223,13 +223,44 @@ export const Card = () => {
 };
 ```
 
-> If your mind is going crazy looking at this, I understand. Happened to all of us when we first looked at CSS modules 😄
+> If your mind is going crazy looking at this, I understand. Happened to all of us when we first looked at CSS modules 😄.
 
-So, as you can see, I'm importing the ``
+So, as you can see, I'm importing the `Card.module.css` as if it were an actual JS module, and just referencing the class as if they were being exported from this "module". It works really well, and it's very comfortable to write this syntax once you get used to it.
+
+It completely scopes the CSS. That is, if you take a peek at the production CSS, it will look something like 👇
+
+```css
+.card-gfh54y {
+}
+
+.avatar-trbgr5 {
+}
+
+.info-kvgs4326 {
+}
+
+.title-gchv98 {
+}
+
+.description-chgct231j {
+}
+```
+
+All these classes are given an extra hash. Now if you use the same selector in another CSS Module, these selectors won't clash, as they'll both be very different.
 
 # CSS in JS
 
+CSS in JS, unlike plain ol' BEM in <mark>CSS in CSS</mark>, is not a methodology. It's just different libraries that try to solve problems with styling in very different ways. They are all very very different, and have made the platform much better. Some are revolutionary. Some are simple and down to earth, but have solved the smallest but most painful problems in Styling and other things.
+
+So on with them!!
+
 ## JSS
+
+JSS allows you to write all your CSS in plain old JS objects. Let's look at the same example from above, just in JSS style 👇
+
+```js
+
+```
 
 ## Emotion
 
