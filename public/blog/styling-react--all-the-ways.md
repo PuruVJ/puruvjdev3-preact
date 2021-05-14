@@ -63,7 +63,7 @@ And finally, some modifiers to change the look of the **Block** 👇
 </a>
 ```
 
-(This still looks maintainable, but ones your app grows and there are much more elements in it, things will become messy)
+(This still looks **OK**, but when your app grows and there are much more elements in it, things will become messy)
 
 ## SCSS
 
