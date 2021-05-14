@@ -164,6 +164,47 @@ We have a completely flat structure here. The only indentation we need is for ev
 
 ## CSS Modules
 
+It's quite a hybrid way of writing CSS. Hybrid in the sense that you write plain old CSS(or `SCSS` or `LESS` etc), but it doesn't get applied directly. rather, you have to `import` the rules from the CSS files in your JS and use them.
+
+So lets look the SCSS file we had 👇
+
+```scss
+.card {
+  .avatar {
+  }
+
+  .info {
+  }
+
+  .title {
+  }
+
+  .description {
+  }
+}
+```
+
+Let's make it flat 👇
+
+```css
+.card {
+}
+
+.avatar {
+}
+
+.info {
+}
+
+.title {
+}
+
+.description {
+}
+```
+
+Now, lets assume that this file is named `Card.module.css`
+
 # CSS in JS
 
 ## JSS
