@@ -50,7 +50,7 @@ And finally, some modifiers to change the look of the **Block** 👇
 
 ### Advantages
 
-1. You get scoping just by naming things
+1. You get scoping just by naming things.
 
 ### Disadvantages
 
@@ -70,7 +70,30 @@ export const Card = () => {
 };
 ```
 
-(This still looks **OK**, but when your app grows and there are much more elements in it, things will become messy)
+And the Styling follows:
+
+```css
+.card {
+}
+
+.card__avatar {
+}
+
+.card__info {
+}
+
+.card__info__title {
+}
+
+.card__info__description {
+}
+```
+
+See the problem here? Both the HTML and CSS will look messy and hard to scan because of so much duplication.
+
+(This still looks **OK**, but when your app grows and there are 1000s of these, things will become messy)
+
+2. It's easy to forget to write rules in BEM and forget to fix it up later, causing bugs later on.
 
 ## SCSS (& SASS)
 
@@ -79,7 +102,7 @@ SCSS is the next best thing really. Say you have this little component 👇
 ```js
 export const Card = () => {
   return (
-    <section className="container">
+    <section className="card">
       <img className="avatar" src="..." />
       <div className="info">
         <div className="title">...</div>
@@ -89,6 +112,55 @@ export const Card = () => {
   );
 };
 ```
+
+Then the styling would be as simple as this 👇
+
+```scss
+.card {
+  .avatar {
+  }
+
+  .info {
+    .title {
+    }
+
+    .description {
+    }
+  }
+}
+```
+
+As you can see, we have a really great sense of hierarchy here, just by indentation. And its very familiar, because it is similar to how hierarchy is presented in HTML, so this is very easy to scan.
+
+And the options here are limitless. If you want a flat structure but still want scoping, just do it like this 👇
+
+```scss
+.card {
+  .avatar {
+  }
+
+  .info {
+  }
+
+  .title {
+  }
+
+  .description {
+  }
+}
+```
+
+We have a completely flat structure here. The only indentation we need is for everything to be inside `.card` for scoping.
+
+### Advantages
+
+1. Very clean and readable
+2. Minifies better than BEM
+
+### Disadvantages
+
+1. Introduces an extra build step(Though its not a huge problem if you use something like Snowpack or Vite or WMR, the support is built-in)
+2. Have to learn extra rules.
 
 ## CSS Modules
 
