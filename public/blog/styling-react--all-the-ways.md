@@ -336,15 +336,57 @@ And yes, these styles are 100% scoped. In fact that's the case with every single
 
 3. Higher bundle size: Well, JSS isn't free. It has its own bundle size that is added to your own bundle (22.3 KB minified, 6.6KB min+gzip). Not a lot for most users, but it might be for your own use cases. Tread carefully.
 
+## Styled Components
+
+`styled-components` is personally, my most favorite way of writing styles in React. It offers an amazing API of writing CSS, using it, and overall it's just really good.
+
+So let's rewrite our customary `Card` component in styled components and see how it holds up
+
+```js
+import styled from 'styled-components';
+
+export const Card = () => {
+  return (
+    <Card>
+      <Avatar src="..." />
+      <Info>
+        <Title>...</Title>
+        <Description>...</Description>
+      </Info>
+    </Card>
+  );
+};
+
+const Card = styled.section`
+  /* Card styles */
+`;
+
+const Avatar = styled.img`
+  /* Avatar styles */
+`;
+
+const Info = styled.div`
+  /* Info styles */
+`;
+
+const Title = styled.div`
+  /* Title styles */
+`;
+
+const Description = styled.div`
+  /* Description styles */
+`;
+```
+
+Behold!!! Just look at how amazingly beautiful this code looks
+
 ## Emotion
 
-## Styled Components
+## Goober
 
 ## Linaria
 
 ## styled-jsx
-
-## Goober
 
 ## Stitches
 
