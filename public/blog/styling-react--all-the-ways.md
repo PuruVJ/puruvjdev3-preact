@@ -19,7 +19,7 @@ Oldest trick in the book of writing CSS: Write in `.css` files(Or `.scss` or `.l
 
 Now, generally, if you have a medium/large-sized app, writing all your styles in plain CSS files is not a good idea, as sometimes, due to the size of the app, you may forget an existing selector and reuse it for some other block, and voila!! You have super weird styling that you have absolutely no idea how it got there.
 
-## CSS BEM
+# CSS BEM
 
 CSS BEM helps elevate that. Its not some external code, not a package, not a library. It's a methodology. It's a bunch of rules you remember while writing your CSS.
 
@@ -48,11 +48,11 @@ And finally, some modifiers to change the look of the **Block** 👇
 }
 ```
 
-### Advantages
+## Advantages
 
 1. You get scoping just by naming things.
 
-### Disadvantages
+## Disadvantages
 
 1. The HTML and CSS can turn horribly messy with these huge names, like this 👇
 
@@ -95,7 +95,7 @@ See the problem here? Both the HTML and CSS will look messy and hard to scan bec
 
 2. It's easy to forget to write rules in BEM and forget to fix it up later, causing bugs later on.
 
-## SCSS (& SASS)
+# SCSS (& SASS)
 
 SCSS is the next best thing really. Say you have this little component 👇
 
@@ -152,17 +152,17 @@ And the options here are limitless. If you want a flat structure but still want 
 
 We have a completely flat structure here. The only indentation we need is for everything to be inside `.card` for scoping.
 
-### Advantages
+## Advantages
 
 1. Very clean and readable
 2. Minifies better than BEM
 
-### Disadvantages
+## Disadvantages
 
 1. Introduces an extra build step(Though its not a huge problem if you use something like Snowpack or Vite or WMR, the support is built-in)
 2. Have to learn extra rules.
 
-## CSS Modules
+# CSS Modules
 
 It's quite a hybrid way of writing CSS. Hybrid in the sense that you write plain old CSS(or `SCSS` or `LESS` etc), but it doesn't get applied directly. rather, you have to `import` the rules from the CSS files in your JS and use them.
 
@@ -254,7 +254,7 @@ CSS in JS, unlike plain ol' BEM in <mark>CSS in CSS</mark>, is not a methodology
 
 So on with them!!
 
-## JSS
+# JSS
 
 JSS allows you to write all your CSS in plain old JS objects. Let's look at the same example from above, just in JSS style 👇
 
@@ -316,7 +316,7 @@ export const Card = () => {
 
 And yes, these styles are 100% scoped. In fact that's the case with every single CSS in JS libraries listed below. All of em have scoping by default.
 
-### Advantages
+## Advantages
 
 1. All relevant styles co-located in one place(Preferential. You can keep these styles in their own dedicated files. It's just personal preference)
 
@@ -328,7 +328,7 @@ And yes, these styles are 100% scoped. In fact that's the case with every single
 
 ![Recursive Doge](../assets/media/all-ways-style-react--recursive-doge.gif)
 
-### Disadvantages
+## Disadvantages
 
 1. Unnatural writing style: Writing styles in a JS object can feel foreign to a lot of devs. And if you're a VSCode user, and have a slow machine, the experience might be terrible for you, due to VSCode trying to fetch the next autocomplete from the huge set of CSS properties it has in the internal typings.
 
@@ -336,11 +336,50 @@ And yes, these styles are 100% scoped. In fact that's the case with every single
 
 3. Higher bundle size: Well, JSS isn't free. It has its own bundle size that is added to your own bundle (22.3 KB minified, 6.6KB min+gzip). Not a lot for most users, but it might be for your own use cases. Tread carefully.
 
-## Styled Components
+# Styled Components
 
 `styled-components` is personally, my most favorite way of writing styles in React. It offers an amazing API of writing CSS, using it, and overall it's just really good.
 
-So let's rewrite our customary `Card` component in styled components and see how it holds up
+The basic syntax os `styled-components` goes like this 👇
+
+```js
+const Button = styled.a`
+  display: inline-block;
+
+  border-radius: 3px;
+  border: 2px solid white;
+
+  padding: 0.5rem 0;
+  margin: 0.5rem 1rem;
+
+  width: 11rem;
+
+  background: transparent;
+
+  color: white;
+
+  /* The GitHub button is a primary button */
+  ${(props) =>
+    props.primary &&
+    css`
+      background: white;
+
+      color: black;
+    `}
+`;
+
+render(
+  <Button primary href="https://github.com/styled-components/styled-components">
+    GitHub
+  </Button>
+);
+```
+
+> Example taken directly from [styled-components.com](https://styled-components.com/)
+
+As you can see, we write ours styles in a JavaScript [Template Literals](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals). This gives us a component with all the styles applied to it. You can compose this component just like any other React component. This is a huge paradigm shift. Rather than styles being for you whole page, your style exists atomically as a component. It's a even more granular way of writing styles. This has tons of benefits, like dead style elimination, highly reusable styles, and very clean looking JSX.
+
+So let's rewrite our customary `Card` component in styled components and see how it holds up 👇
 
 ```js
 import styled from 'styled-components';
@@ -378,16 +417,22 @@ const Description = styled.div`
 `;
 ```
 
-Behold!!! Just look at how amazingly beautiful this code looks
+Behold!!! Just look at how amazingly beautiful this code looks. Every single element, just by its name shows what it is and what it does. This is so much cleaner and better.
 
-## Emotion
+And in case you are wondering how to get a good CSS authoring experience while inside the `styled.*` literals, there's a VSCode extension for that. You install it, and when you write CSS inside the `styled.*` literals, it will give you syntax highlighting and autocompletion as if writing in a `.css` file. Here's the extension.
 
-## Goober
+And yes, it supports Sass like nesting too.
 
-## Linaria
+## Advantages
 
-## styled-jsx
+# Emotion
 
-## Stitches
+# Goober
 
-## Vanilla Extract
+# Linaria
+
+# styled-jsx
+
+# Stitches
+
+# Vanilla Extract
