@@ -259,8 +259,82 @@ So on with them!!
 JSS allows you to write all your CSS in plain old JS objects. Let's look at the same example from above, just in JSS style 👇
 
 ```js
+import { createUseStyles } from 'react-jss';
 
+const useStyles = createUseStyles({
+  card: {
+    /* Card Styles */
+  },
+  avatar: {
+    /* Avatar Styles */
+  },
+  info: {
+    /* Info Styles */
+  },
+  title: {
+    /* Title Styles */
+  },
+  description: {
+    /* Description Styles */
+  },
+});
+
+export const Card = () => {
+  const css = useStyles();
+
+  return (
+    <section className={css.card}>
+      <img className={css.avatar} src="..." />
+      <div className={css.info}>
+        <div className={css.title}>...</div>
+        <div className={css.description}>...</div>
+      </div>
+    </section>
+  );
+};
 ```
+
+As you can see, instead of an external CSS file, out styles are actually an object created by `createUseStyles` function, and these styles live in the same file. This allows your related code to be collocated in one place, which is quite good in technologies like React.
+
+And you simply use these styles as a hook in your `card` component the same way we referred to our styles in the CSS Modules way. or you can destructure classes from it and directly use them.
+
+```js
+export const Card = () => {
+  const { card, avatar, info, title, description } = useStyles();
+
+  return (
+    <section className={card}>
+      <img className={avatar} src="..." />
+      <div className={info}>
+        <div className={title}>...</div>
+        <div className={description}>...</div>
+      </div>
+    </section>
+  );
+};
+```
+
+And yes, these styles are 100% scoped. In fact that's the case with every single CSS in JS libraries listed below. All of em have scoping by default.
+
+### Advantages
+
+1. All relevant styles co-located in one place(Preferential. You can keep these styles in their own dedicated files. It's just personal preference)
+
+2. Great for Design systems. As its just plain ol JS, creating design systems is very very easy and effective here.
+
+3. All styles 100% Scoped.
+
+4. SCSS like syntax to style a selector within a selector within a selector... and so on. You get the idea 😁
+
+![Recursive Doge](../assets/media/all-ways-style-react--recursive-doge.gif)
+
+### Disadvantages
+
+1. Unnatural writing style: Writing styles in a JS object can feel foreign to a lot of devs. And if you're a VSCode user, and have a slow machine, the experience might be terrible for you, due to VSCode trying to fetch the next autocomplete from the huge set of CSS properties it has in the internal typings.
+
+2. Less performant: CSS being populated by JS rather than put into an external stylesheet can make the overall experience slower, reducing the performance and degrading the User Experience.
+
+3. Higher bundle size: Well, JSS isn't free. It has its own bundle size that is added to your own bundle (22.3 KB minified, 6.6KB min+gzip). Not a lot for most users, but it might be for your own use cases. Tread carefully.
 
 ## Emotion
 
