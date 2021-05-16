@@ -425,6 +425,38 @@ And yes, it supports Sass like nesting too.
 
 ## Advantages
 
+1. Super clean API. I already mentioned that multiple times I guess 😅
+
+2. Dead style detection very easy due to VSCode marking out the styled component variable not being used.
+
+3. Scoped styles
+
+4. SCSS/SASS like Nesting. Not only that, you can nest **Components** too, like this
+
+```js
+const Title = styled.h1``;
+
+const Card = styled.section`
+  ${Title} {
+    font-size: 2rem;
+  }
+`;
+```
+
+5. SSR friendly.
+
+## Disadvantages
+
+1. Writing CSS inside template literals in JS files can feel unnatural.
+
+2. Adds bundle size to application
+
+3. By default, the CSS you write stays as in your production bundle. As in, the plain JS will be minified, but the unminified styles will stand out and take more space. Though thankfully, there's the [babel-plugin-styled-components](https://www.npmjs.com/package/babel-plugin-styled-components) to minify your CSS, so this issue can be solved. Unfortunately, even that can't minify the styles as well as native CSS could be minified by [cssnano](https://cssnano.co) and friends.
+
+![Unminified Styled components](../assets/media/why-move-styled-to-css-modules--unmin-styled-comps-code.png)
+
+4. Performance heavy: As Styled Components churns out Styles in runtime, after the JavaScript is parsed and applied, the initial paint can take a longer time, and because the styling is managed by JS, it is overall less performant than Native CSS.
+
 # Emotion
 
 # Goober
