@@ -384,7 +384,7 @@ So let's rewrite our customary `Card` component in styled components and see how
 ```js
 import styled from 'styled-components';
 
-export const Card = () => {
+export const AppCard = () => {
   return (
     <Card>
       <Avatar src="..." />
@@ -458,6 +458,46 @@ const Card = styled.section`
 4. Performance heavy: As Styled Components churns out Styles in runtime, after the JavaScript is parsed and applied, the initial paint can take a longer time, and because the styling is managed by JS, it is overall less performant than Native CSS.
 
 # Emotion
+
+Emotion is one of the most flexible CSS-in-JS libraries out there. What do I mean by flexible? Remember how we wrote that beautiful beautiful styled components example? Well if we rewrite that in emotion, we get this 👇
+
+```js
+import styled from '@emotion/styled';
+
+export const AppCard = () => {
+  return (
+    <Card>
+      <Avatar src="..." />
+      <Info>
+        <Title>...</Title>
+        <Description>...</Description>
+      </Info>
+    </Card>
+  );
+};
+
+const Card = styled.section`
+  /* Card styles */
+`;
+
+const Avatar = styled.img`
+  /* Avatar styles */
+`;
+
+const Info = styled.div`
+  /* Info styles */
+`;
+
+const Title = styled.div`
+  /* Title styles */
+`;
+
+const Description = styled.div`
+  /* Description styles */
+`;
+```
+
+![Superman looking for what changed](../assets/media/all-ways-style-react--where-change-superman.gif)
 
 # Goober
 
