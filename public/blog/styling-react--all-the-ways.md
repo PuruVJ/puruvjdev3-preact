@@ -457,12 +457,48 @@ const Card = styled.section`
 
 4. Performance heavy: As Styled Components churns out Styles in runtime, after the JavaScript is parsed and applied, the initial paint can take a longer time, and because the styling is managed by JS, it is overall less performant than Native CSS.
 
-# Emotion
+# Goober
 
-Emotion is one of the most flexible CSS-in-JS libraries out there. What do I mean by flexible? Remember how we wrote that beautiful beautiful styled components example? Well if we rewrite that in emotion, we get this 👇
+Goober is very interesting library in the sense that it provides a very similar API and functionality as <mark>styled-components</mark>, but it does all that in just `1KB`. Just 1KB!!
+
+I opened its production file in browser, and this is how big it is 👇
+
+![Goober production bundle](../assets/media/all-ways-style-react--goober-bundles-size.png)
+
+My reaction when I first looked at it 👇
+
+![Cat astonished at Goober's size](../assets/media/all-ways-style-react--goober-bundles-size-cat-reaction.gif)
+
+This library does so much in so little, it's even beyond my wildest dreams. But enough looking at bundle sizes. Here's some code 👇
 
 ```js
-import styled from '@emotion/styled';
+import { styled } from 'goober';
+
+const Button = styled('button')`
+  border: 0;
+  background: dodgerblue;
+
+  span {
+    color: white;
+  }
+
+  &:hover {
+    background: tomato;
+    span {
+      color: black;
+    }
+  }
+`;
+```
+
+As you can see, very very similar to Styled Components, with the exception of styles beginning as `styled('button')`.
+
+Goober supports almost as many features as styled-components, and even more in other ways, like extracting CSS and putting it in style tags in head and what not. This is the perfect library. Write styles like Styled Components, and enjoy performance of CSS Modules. I highly encourage you to check it out.
+
+Oh, and as for our customary `AppCard` component, here's how it looks in Goober 👇
+
+```js
+import { styled } from 'goober';
 
 export const AppCard = () => {
   return (
@@ -476,35 +512,51 @@ export const AppCard = () => {
   );
 };
 
-const Card = styled.section`
+const Card = styled('section')`
   /* Card styles */
 `;
 
-const Avatar = styled.img`
+const Avatar = styled('img')`
   /* Avatar styles */
 `;
 
-const Info = styled.div`
+const Info = styled('div')`
   /* Info styles */
 `;
 
-const Title = styled.div`
+const Title = styled('div')`
   /* Title styles */
 `;
 
-const Description = styled.div`
+const Description = styled('div')`
   /* Description styles */
 `;
 ```
 
-![Superman looking for what changed](../assets/media/all-ways-style-react--where-change-superman.gif)
+And if you're in love with `styled.div` API, fear not! Goober supports this syntax using the [babel-plugin-transform-goober](https://goober.js.org/integrations/babel-plugin)
 
-# Goober
+## Advantages
+
+1. Same clean, beautiful API as Styled Components.
+
+2. Only 1KB runtime.
+
+3. Extract CSS into styled tags during build time for enhanced performance.
+
+### Disadvantages
+
+Can't think of one. This library is pretty much perfect 😁
 
 # Linaria
 
-# styled-jsx
+Out of all the above libraries, this is my most favorite library. Like Goober, it has the same `styled-components` API. And unlike Goober, it doesn't only allow you to extract the CSS out into style tags, but the library itself gets removed during production build.
 
-# Stitches
+You write your components like this 👇
+
+```js
+
+```
+
+# styled-jsx
 
 # Vanilla Extract
