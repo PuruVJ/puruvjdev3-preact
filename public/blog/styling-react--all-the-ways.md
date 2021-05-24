@@ -554,9 +554,170 @@ Out of all the above libraries, this is my most favorite library. Like Goober, i
 You write your components like this 👇
 
 ```js
+import { styled } from '@linaria/react';
 
+export const AppCard = () => {
+  return (
+    <Card>
+      <Avatar src="..." />
+      <Info>
+        <Title>...</Title>
+        <Description>...</Description>
+      </Info>
+    </Card>
+  );
+};
+
+const Card = styled.section`
+  /* Card styles */
+`;
+
+const Avatar = styled.img`
+  /* Avatar styles */
+`;
+
+const Info = styled.div`
+  /* Info styles */
+`;
+
+const Title = styled.div`
+  /* Title styles */
+`;
+
+const Description = styled.div`
+  /* Description styles */
+`;
 ```
 
-# styled-jsx
+As you can see, exactly like styled-components. The magic here is that these styles are generated as raw scoped CSS, put into `<style>` tags, and then, all this JS code is just removed. The linaria library doesn't even ships to your browser. **It removes itself.**
 
-# Vanilla Extract
+![Magic](../assets/media/all-ways-style-react--shia-magic.gif)
+
+Not only that, you can use the `css` helper to generate css classes from styles and use them like styled components 👇
+
+```js
+import { css } from '@linaria/core';
+
+const card = css`
+  /* Card styles */
+`;
+
+const avatar = css`
+  /* Avatar styles */
+`;
+
+const info = css`
+  /* Info styles */
+`;
+
+const title = css`
+  /* Title styles */
+`;
+
+const description = css`
+  /* Description styles */
+`;
+
+export const Card = () => {
+  return (
+    <section className={card}>
+      <img className={avatar} src="..." />
+      <div className={info}>
+        <div className={title}>...</div>
+        <div className={description}>...</div>
+      </div>
+    </section>
+  );
+};
+```
+
+And this just works!!! This method is also framework-agnostic. And again, this is all stripped away into plain CSS.
+
+## Advantages
+
+1. Same clean, beautiful API as Styled Components.
+
+2. 0Kb runtime!!
+
+3. Extract CSS into styled tags during build time for enhanced performance.
+
+## Disadvantages
+
+1. Compatibility - Linaria isn't fully compatible with all the build tools. For example, I had trouble using it with import aliases in ViteJS, though it worked well without the aliases and some configuration.
+
+2. Documentation isn't the most extensive. It still needs some work.
+
+# Vanilla Extract 🍦
+
+Vanilla Extract is the new cool kid on block. Brought to you by the same people behind CSS Modules, this way of writing CSS is very radical, in the sense that you write all your styles in `.css.ts` files, as TypeScript objects, and when you build your site, all the JS is removed and the styles you wrote are populated as basic CSS styles in stylesheets. Super performant like Linaria.
+
+It supports all the things like scoping, nesting, and all, but its approach is quite different. You see, you define variables that you wanna use, like theming variables, and you can use them directly. How it is different from mechanisms like `ThemeContext` in React is that, these variables are actually converted into <mark>CSS variables</mark>, which are also scoped using mangling mechanisms. So all your theming even happens in plain CSS in production. It doesn't get more performant than that.
+
+Here's how our `AppCard` would look in it 👇
+
+```ts
+// Card.css.ts
+
+import { style } from '@vanilla-extract/css';
+
+export const cardStyle = style({
+  /** Card style goes here in key value pairs, just like JSS */
+});
+
+export const avatarStyle = style({
+  /** Card style goes here in key value pairs, just like JSS */
+});
+
+export const infoStyle = style({
+  /** Card style goes here in key value pairs, just like JSS */
+});
+
+export const titleStyle = style({
+  /** Card style goes here in key value pairs, just like JSS */
+});
+
+export const descriptionStyle = style({
+  /** Card style goes here in key value pairs, just like JSS */
+});
+```
+
+And then, we consume these as simple `className`s in our component 👇
+
+```js
+import { cardStyle, avatarStyle, infoStyle, titleStyle, descriptionStyle } from './Card.css';
+
+export const Card = () => {
+  return (
+    <section className={cardStyle}>
+      <img className={avatarStyle} src="..." />
+      <div className={infoStyle}>
+        <div className={titleStyle}>...</div>
+        <div className={descriptionStyle}>...</div>
+      </div>
+    </section>
+  );
+};
+```
+
+This library is filled to the brim with novel great features, and I've just touched the surface here.
+
+## Advantages
+
+1. Strongly typed Style authoring experience.
+
+2. Theming and Breakpoints are super easy to do.
+
+3. Super performant, as it gets out of your bundle completely, leaving only plain CSS in the end, which just works.
+
+4. Framework agnostic
+
+## Disadvantages
+
+1. Again, this style of writing CSS as JS objects might seem unnatural to some people. It's a nitpick.
+
+# Conclusion
+
+Here's a very brief rundown of some techniques with which you can style your React apps and components. None of these are better than the other, it's just what you find most comfortable for yourselves/your team. CHoose wisely!
+
+That's it!
+Signing off! 👋
