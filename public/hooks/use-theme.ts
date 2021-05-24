@@ -8,7 +8,7 @@ let isFirstUpdate = true;
 
 const browser = typeof window !== 'undefined';
 
-const localValue = browser ? localStorage.getItem<Theme>('theme') : 'morning';
+let localValue = browser ? localStorage.getItem<Theme>('theme') : 'morning';
 const systemTheme: Theme =
   browser && matchMedia('(prefers-color-scheme: dark)').matches ? 'night' : 'morning';
 
@@ -23,10 +23,19 @@ export function useTheme() {
   if (typeof window === 'undefined') return [theme, setTheme] as const;
 
   useLayoutEffect(() => {
-    if (isFirstUpdate) {
-      setTheme(localValue || systemTheme);
-      isFirstUpdate = false;
-    }
+    if (!isFirstUpdate) return;
+
+    // @ts-expect-error
+    if (localValue === 'light') localValue = 'morning';
+
+    // @ts-expect-error
+    if (localValue === 'midday') localValue = 'noon';
+
+    // @ts-expect-error
+    if (localValue === 'dark') localValue = 'night';
+
+    setTheme(localValue || systemTheme);
+    isFirstUpdate = false;
   }, []);
 
   /**

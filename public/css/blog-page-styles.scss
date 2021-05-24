@@ -11,6 +11,7 @@ pre.shiki {
 
   code {
     font-size: inherit;
+    font-weight: 400;
     border-radius: inherit;
     overflow: inherit;
     background-color: inherit;
@@ -64,6 +65,11 @@ code {
     line-height: 1.2;
   }
 
+  h3 {
+    font-size: calc(1.2 * 1.414rem);
+    line-height: 1.2;
+  }
+
   h3 a,
   h2 a,
   h1 a {
@@ -104,6 +110,10 @@ code {
     font-family: 'JetBrains Mono', monospace;
     border-radius: 0 8px 8px 0;
     background-color: rgba(var(--app-color-dark-rgb), 0.05);
+
+    a[href] {
+      font-weight: 500 !important;
+    }
   }
 
   .picture-container {
@@ -111,9 +121,15 @@ code {
   }
 
   figure {
+    --bgcolor: var(--app-color-primary);
+
+    padding-top: var(--padding-top);
     margin: 0;
+
     position: relative;
     border-radius: 0.5rem;
+
+    background-color: var(--bgcolor);
 
     picture {
       border-radius: inherit;
@@ -121,6 +137,7 @@ code {
 
     img {
       width: 100%;
+
       position: absolute;
       height: auto;
       top: 0;
@@ -163,6 +180,7 @@ code {
       background-position: 0 100%;
 
       color: var(--app-color-primary-contrast);
+      font-weight: 600 !important;
 
       border-radius: 0.25rem;
 

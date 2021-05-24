@@ -4,12 +4,12 @@ import { Footer } from './components/Footer';
 import { Nav } from './components/Nav';
 import './css/global.scss';
 import './css/themes.scss';
-import Home from './pages/home/Home';
 
 if (process.env.NODE_ENV === 'development') {
   import('preact/devtools');
 }
 
+const Home = lazy(() => import('./pages/home/Home'));
 const BlogIndex = lazy(() => import('./pages/blog-index/BlogIndex'));
 const BlogPage = lazy(() => import('./pages/blog-page/BlogPage'));
 const Works = lazy(() => import('./pages/works/Works'));

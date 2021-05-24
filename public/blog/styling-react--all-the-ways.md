@@ -1,0 +1,723 @@
+---
+title: All the ways of styling React
+description: React itself doesn't come with any styling solution. So the community came with its own solutions. Here's a list of them.
+date: 14 May, 2021
+cover_image: media/all-ways-style-react--cover.jpg
+---
+
+![Cover image](../assets/media/all-ways-style-react--cover.jpg)
+
+> Photo by [Johannes Plenio](https://unsplash.com/photos/E-Zuyev2XWo)
+
+React itself doesn't come with any styling solution out of the box. You can look at the docs, but you won't find a "the-way" to do styling. So the awesome community have come up with ways of styling, and boy, there are a lot of those. So I'm going to cover quite a lot of them in this article. Read on!
+
+When it comes to React ecosystem, we can safely divide these into 2 categories: CSS in CSS🙄 and CSS-in-JS.
+
+# CSS in CSS
+
+Oldest trick in the book of writing CSS: Write in `.css` files(Or `.scss` or `.less` or `.styl`. You name it 😁).
+
+Now, generally, if you have a medium/large-sized app, writing all your styles in plain CSS files is not a good idea, as sometimes, due to the size of the app, you may forget an existing selector and reuse it for some other block, and voila!! You have super weird styling that you have absolutely no idea how it got there.
+
+# CSS BEM
+
+CSS BEM helps elevate that. Its not some external code, not a package, not a library. It's a methodology. It's a bunch of rules you remember while writing your CSS.
+
+BEM stands for **Block**-**Element**-**Modifier**
+
+Block would be this:
+
+```css
+.btn {
+}
+```
+
+This here 👇 is the **Element**, that depends on the block (`.btn` in this case)
+
+```css
+.btn__price {
+}
+```
+
+And finally, some modifiers to change the look of the **Block** 👇
+
+```css
+.btn--orange {
+}
+.btn--big {
+}
+```
+
+## Advantages
+
+1. You get scoping just by naming things.
+
+## Disadvantages
+
+1. The HTML and CSS can turn horribly messy with these huge names, like this 👇
+
+```js
+export const Card = () => {
+  return (
+    <section className="card">
+      <img className="card__avatar" src="..." />
+      <div className="card__info">
+        <div className="card__info__title">...</div>
+        <div className="card__info__description">...</div>
+      </div>
+    </section>
+  );
+};
+```
+
+And the Styling follows:
+
+```css
+.card {
+}
+
+.card__avatar {
+}
+
+.card__info {
+}
+
+.card__info__title {
+}
+
+.card__info__description {
+}
+```
+
+See the problem here? Both the HTML and CSS will look messy and hard to scan because of so much duplication.
+
+(This still looks **OK**, but when your app grows and there are 1000s of these, things will become messy)
+
+2. It's easy to forget to write rules in BEM and forget to fix it up later, causing bugs later on.
+
+# SCSS (& SASS)
+
+SCSS is the next best thing really. Say you have this little component 👇
+
+```js
+export const Card = () => {
+  return (
+    <section className="card">
+      <img className="avatar" src="..." />
+      <div className="info">
+        <div className="title">...</div>
+        <div className="description">...</div>
+      </div>
+    </section>
+  );
+};
+```
+
+Then the styling would be as simple as this 👇
+
+```scss
+.card {
+  .avatar {
+  }
+
+  .info {
+    .title {
+    }
+
+    .description {
+    }
+  }
+}
+```
+
+As you can see, we have a really great sense of hierarchy here, just by indentation. And its very familiar, because it is similar to how hierarchy is presented in HTML, so this is very easy to scan.
+
+And the options here are limitless. If you want a flat structure but still want scoping, just do it like this 👇
+
+```scss
+.card {
+  .avatar {
+  }
+
+  .info {
+  }
+
+  .title {
+  }
+
+  .description {
+  }
+}
+```
+
+We have a completely flat structure here. The only indentation we need is for everything to be inside `.card` for scoping.
+
+## Advantages
+
+1. Very clean and readable
+2. Minifies better than BEM
+
+## Disadvantages
+
+1. Introduces an extra build step(Though its not a huge problem if you use something like Snowpack or Vite or WMR, the support is built-in)
+2. Have to learn extra rules.
+
+# CSS Modules
+
+It's quite a hybrid way of writing CSS. Hybrid in the sense that you write plain old CSS(or `SCSS` or `LESS` etc), but it doesn't get applied directly. rather, you have to `import` the rules from the CSS files in your JS and use them.
+
+So lets look the SCSS file we had 👇
+
+```scss
+.card {
+  .avatar {
+  }
+
+  .info {
+  }
+
+  .title {
+  }
+
+  .description {
+  }
+}
+```
+
+Let's make it flat 👇
+
+```css
+.card {
+}
+
+.avatar {
+}
+
+.info {
+}
+
+.title {
+}
+
+.description {
+}
+```
+
+Now, lets assume that this file is named `Card.module.css`, and the component we saw above is named `Card.tsx`(Or `Card.js` or `Card.jsx`. Depends on your personal preference. Me, I'm a TypeScript guy 🙃)
+
+So here's how you would use these styles in that file
+
+```js
+import css from './Card.module.css';
+
+export const Card = () => {
+  return (
+    <section className={css.card}>
+      <img className={css.avatar} src="..." />
+      <div className={css.info}>
+        <div className={css.title}>...</div>
+        <div className={css.description}>...</div>
+      </div>
+    </section>
+  );
+};
+```
+
+> If your mind is going crazy looking at this, I understand. Happened to all of us when we first looked at CSS modules 😄.
+
+So, as you can see, I'm importing the `Card.module.css` as if it were an actual JS module, and just referencing the class as if they were being exported from this "module". It works really well, and it's very comfortable to write this syntax once you get used to it.
+
+It completely scopes the CSS. That is, if you take a peek at the production CSS, it will look something like 👇
+
+```css
+.card-gfh54y {
+}
+
+.avatar-trbgr5 {
+}
+
+.info-kvgs4326 {
+}
+
+.title-gchv98 {
+}
+
+.description-chgct231j {
+}
+```
+
+All these classes are given an extra hash. Now if you use the same selector in another CSS Module, these selectors won't clash, as they'll both be very different.
+
+# CSS in JS
+
+CSS in JS, unlike plain ol' BEM in <mark>CSS in CSS</mark>, is not a methodology. It's just different libraries that try to solve problems with styling in very different ways. They are all very very different, and have made the platform much better. Some are revolutionary. Some are simple and down to earth, but have solved the smallest but most painful problems in Styling and other things.
+
+So on with them!!
+
+# JSS
+
+JSS allows you to write all your CSS in plain old JS objects. Let's look at the same example from above, just in JSS style 👇
+
+```js
+import { createUseStyles } from 'react-jss';
+
+const useStyles = createUseStyles({
+  card: {
+    /* Card Styles */
+  },
+  avatar: {
+    /* Avatar Styles */
+  },
+  info: {
+    /* Info Styles */
+  },
+  title: {
+    /* Title Styles */
+  },
+  description: {
+    /* Description Styles */
+  },
+});
+
+export const Card = () => {
+  const css = useStyles();
+
+  return (
+    <section className={css.card}>
+      <img className={css.avatar} src="..." />
+      <div className={css.info}>
+        <div className={css.title}>...</div>
+        <div className={css.description}>...</div>
+      </div>
+    </section>
+  );
+};
+```
+
+As you can see, instead of an external CSS file, out styles are actually an object created by `createUseStyles` function, and these styles live in the same file. This allows your related code to be collocated in one place, which is quite good in technologies like React.
+
+And you simply use these styles as a hook in your `card` component the same way we referred to our styles in the CSS Modules way. or you can destructure classes from it and directly use them.
+
+```js
+export const Card = () => {
+  const { card, avatar, info, title, description } = useStyles();
+
+  return (
+    <section className={card}>
+      <img className={avatar} src="..." />
+      <div className={info}>
+        <div className={title}>...</div>
+        <div className={description}>...</div>
+      </div>
+    </section>
+  );
+};
+```
+
+And yes, these styles are 100% scoped. In fact that's the case with every single CSS in JS libraries listed below. All of em have scoping by default.
+
+## Advantages
+
+1. All relevant styles co-located in one place(Preferential. You can keep these styles in their own dedicated files. It's just personal preference)
+
+2. Great for Design systems. As its just plain ol JS, creating design systems is very very easy and effective here.
+
+3. All styles 100% Scoped.
+
+4. SCSS like syntax to style a selector within a selector within a selector... and so on. You get the idea 😁
+
+![Recursive Doge](../assets/media/all-ways-style-react--recursive-doge.gif)
+
+## Disadvantages
+
+1. Unnatural writing style: Writing styles in a JS object can feel foreign to a lot of devs. And if you're a VSCode user, and have a slow machine, the experience might be terrible for you, due to VSCode trying to fetch the next autocomplete from the huge set of CSS properties it has in the internal typings.
+
+2. Less performant: CSS being populated by JS rather than put into an external stylesheet can make the overall experience slower, reducing the performance and degrading the User Experience.
+
+3. Higher bundle size: Well, JSS isn't free. It has its own bundle size that is added to your own bundle (22.3 KB minified, 6.6KB min+gzip). Not a lot for most users, but it might be for your own use cases. Tread carefully.
+
+# Styled Components
+
+`styled-components` is personally, my most favorite way of writing styles in React. It offers an amazing API of writing CSS, using it, and overall it's just really good.
+
+The basic syntax os `styled-components` goes like this 👇
+
+```js
+const Button = styled.a`
+  display: inline-block;
+
+  border-radius: 3px;
+  border: 2px solid white;
+
+  padding: 0.5rem 0;
+  margin: 0.5rem 1rem;
+
+  width: 11rem;
+
+  background: transparent;
+
+  color: white;
+
+  /* The GitHub button is a primary button */
+  ${(props) =>
+    props.primary &&
+    css`
+      background: white;
+
+      color: black;
+    `}
+`;
+
+render(
+  <Button primary href="https://github.com/styled-components/styled-components">
+    GitHub
+  </Button>
+);
+```
+
+> Example taken directly from [styled-components.com](https://styled-components.com/)
+
+As you can see, we write ours styles in a JavaScript [Template Literals](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals). This gives us a component with all the styles applied to it. You can compose this component just like any other React component. This is a huge paradigm shift. Rather than styles being for you whole page, your style exists atomically as a component. It's a even more granular way of writing styles. This has tons of benefits, like dead style elimination, highly reusable styles, and very clean looking JSX.
+
+So let's rewrite our customary `Card` component in styled components and see how it holds up 👇
+
+```js
+import styled from 'styled-components';
+
+export const AppCard = () => {
+  return (
+    <Card>
+      <Avatar src="..." />
+      <Info>
+        <Title>...</Title>
+        <Description>...</Description>
+      </Info>
+    </Card>
+  );
+};
+
+const Card = styled.section`
+  /* Card styles */
+`;
+
+const Avatar = styled.img`
+  /* Avatar styles */
+`;
+
+const Info = styled.div`
+  /* Info styles */
+`;
+
+const Title = styled.div`
+  /* Title styles */
+`;
+
+const Description = styled.div`
+  /* Description styles */
+`;
+```
+
+Behold!!! Just look at how amazingly beautiful this code looks. Every single element, just by its name shows what it is and what it does. This is so much cleaner and better.
+
+And in case you are wondering how to get a good CSS authoring experience while inside the `styled.*` literals, there's a VSCode extension for that. You install it, and when you write CSS inside the `styled.*` literals, it will give you syntax highlighting and autocompletion as if writing in a `.css` file. Here's the extension.
+
+And yes, it supports Sass like nesting too.
+
+## Advantages
+
+1. Super clean API. I already mentioned that multiple times I guess 😅
+
+2. Dead style detection very easy due to VSCode marking out the styled component variable not being used.
+
+3. Scoped styles
+
+4. SCSS/SASS like Nesting. Not only that, you can nest **Components** too, like this
+
+```js
+const Title = styled.h1``;
+
+const Card = styled.section`
+  ${Title} {
+    font-size: 2rem;
+  }
+`;
+```
+
+5. SSR friendly.
+
+## Disadvantages
+
+1. Writing CSS inside template literals in JS files can feel unnatural.
+
+2. Adds bundle size to application
+
+3. By default, the CSS you write stays as in your production bundle. As in, the plain JS will be minified, but the unminified styles will stand out and take more space. Though thankfully, there's the [babel-plugin-styled-components](https://www.npmjs.com/package/babel-plugin-styled-components) to minify your CSS, so this issue can be solved. Unfortunately, even that can't minify the styles as well as native CSS could be minified by [cssnano](https://cssnano.co) and friends.
+
+![Unminified Styled components](../assets/media/why-move-styled-to-css-modules--unmin-styled-comps-code.png)
+
+4. Performance heavy: As Styled Components churns out Styles in runtime, after the JavaScript is parsed and applied, the initial paint can take a longer time, and because the styling is managed by JS, it is overall less performant than Native CSS.
+
+# Goober
+
+Goober is very interesting library in the sense that it provides a very similar API and functionality as <mark>styled-components</mark>, but it does all that in just `1KB`. Just 1KB!!
+
+I opened its production file in browser, and this is how big it is 👇
+
+![Goober production bundle](../assets/media/all-ways-style-react--goober-bundles-size.png)
+
+My reaction when I first looked at it 👇
+
+![Cat astonished at Goober's size](../assets/media/all-ways-style-react--goober-bundles-size-cat-reaction.gif)
+
+This library does so much in so little, it's even beyond my wildest dreams. But enough looking at bundle sizes. Here's some code 👇
+
+```js
+import { styled } from 'goober';
+
+const Button = styled('button')`
+  border: 0;
+  background: dodgerblue;
+
+  span {
+    color: white;
+  }
+
+  &:hover {
+    background: tomato;
+    span {
+      color: black;
+    }
+  }
+`;
+```
+
+As you can see, very very similar to Styled Components, with the exception of styles beginning as `styled('button')`.
+
+Goober supports almost as many features as styled-components, and even more in other ways, like extracting CSS and putting it in style tags in head and what not. This is the perfect library. Write styles like Styled Components, and enjoy performance of CSS Modules. I highly encourage you to check it out.
+
+Oh, and as for our customary `AppCard` component, here's how it looks in Goober 👇
+
+```js
+import { styled } from 'goober';
+
+export const AppCard = () => {
+  return (
+    <Card>
+      <Avatar src="..." />
+      <Info>
+        <Title>...</Title>
+        <Description>...</Description>
+      </Info>
+    </Card>
+  );
+};
+
+const Card = styled('section')`
+  /* Card styles */
+`;
+
+const Avatar = styled('img')`
+  /* Avatar styles */
+`;
+
+const Info = styled('div')`
+  /* Info styles */
+`;
+
+const Title = styled('div')`
+  /* Title styles */
+`;
+
+const Description = styled('div')`
+  /* Description styles */
+`;
+```
+
+And if you're in love with `styled.div` API, fear not! Goober supports this syntax using the [babel-plugin-transform-goober](https://goober.js.org/integrations/babel-plugin)
+
+## Advantages
+
+1. Same clean, beautiful API as Styled Components.
+
+2. Only 1KB runtime.
+
+3. Extract CSS into styled tags during build time for enhanced performance.
+
+### Disadvantages
+
+Can't think of one. This library is pretty much perfect 😁
+
+# Linaria
+
+Out of all the above libraries, this is my most favorite library. Like Goober, it has the same `styled-components` API. And unlike Goober, it doesn't only allow you to extract the CSS out into style tags, but the library itself gets removed during production build.
+
+You write your components like this 👇
+
+```js
+import { styled } from '@linaria/react';
+
+export const AppCard = () => {
+  return (
+    <Card>
+      <Avatar src="..." />
+      <Info>
+        <Title>...</Title>
+        <Description>...</Description>
+      </Info>
+    </Card>
+  );
+};
+
+const Card = styled.section`
+  /* Card styles */
+`;
+
+const Avatar = styled.img`
+  /* Avatar styles */
+`;
+
+const Info = styled.div`
+  /* Info styles */
+`;
+
+const Title = styled.div`
+  /* Title styles */
+`;
+
+const Description = styled.div`
+  /* Description styles */
+`;
+```
+
+As you can see, exactly like styled-components. The magic here is that these styles are generated as raw scoped CSS, put into `<style>` tags, and then, all this JS code is just removed. The linaria library doesn't even ships to your browser. **It removes itself.**
+
+![Magic](../assets/media/all-ways-style-react--shia-magic.gif)
+
+Not only that, you can use the `css` helper to generate css classes from styles and use them like styled components 👇
+
+```js
+import { css } from '@linaria/core';
+
+const card = css`
+  /* Card styles */
+`;
+
+const avatar = css`
+  /* Avatar styles */
+`;
+
+const info = css`
+  /* Info styles */
+`;
+
+const title = css`
+  /* Title styles */
+`;
+
+const description = css`
+  /* Description styles */
+`;
+
+export const Card = () => {
+  return (
+    <section className={card}>
+      <img className={avatar} src="..." />
+      <div className={info}>
+        <div className={title}>...</div>
+        <div className={description}>...</div>
+      </div>
+    </section>
+  );
+};
+```
+
+And this just works!!! This method is also framework-agnostic. And again, this is all stripped away into plain CSS.
+
+## Advantages
+
+1. Same clean, beautiful API as Styled Components.
+
+2. 0Kb runtime!!
+
+3. Extract CSS into styled tags during build time for enhanced performance.
+
+## Disadvantages
+
+1. Compatibility - Linaria isn't fully compatible with all the build tools. For example, I had trouble using it with import aliases in ViteJS, though it worked well without the aliases and some configuration.
+
+2. Documentation isn't the most extensive. It still needs some work.
+
+# Vanilla Extract 🍦
+
+Vanilla Extract is the new cool kid on block. Brought to you by the same people behind CSS Modules, this way of writing CSS is very radical, in the sense that you write all your styles in `.css.ts` files, as TypeScript objects, and when you build your site, all the JS is removed and the styles you wrote are populated as basic CSS styles in stylesheets. Super performant like Linaria.
+
+It supports all the things like scoping, nesting, and all, but its approach is quite different. You see, you define variables that you wanna use, like theming variables, and you can use them directly. How it is different from mechanisms like `ThemeContext` in React is that, these variables are actually converted into <mark>CSS variables</mark>, which are also scoped using mangling mechanisms. So all your theming even happens in plain CSS in production. It doesn't get more performant than that.
+
+Here's how our `AppCard` would look in it 👇
+
+```ts
+// Card.css.ts
+
+import { style } from '@vanilla-extract/css';
+
+export const cardStyle = style({
+  /** Card style goes here in key value pairs, just like JSS */
+});
+
+export const avatarStyle = style({
+  /** Card style goes here in key value pairs, just like JSS */
+});
+
+export const infoStyle = style({
+  /** Card style goes here in key value pairs, just like JSS */
+});
+
+export const titleStyle = style({
+  /** Card style goes here in key value pairs, just like JSS */
+});
+
+export const descriptionStyle = style({
+  /** Card style goes here in key value pairs, just like JSS */
+});
+```
+
+And then, we consume these as simple `className`s in our component 👇
+
+```js
+import { cardStyle, avatarStyle, infoStyle, titleStyle, descriptionStyle } from './Card.css';
+
+export const Card = () => {
+  return (
+    <section className={cardStyle}>
+      <img className={avatarStyle} src="..." />
+      <div className={infoStyle}>
+        <div className={titleStyle}>...</div>
+        <div className={descriptionStyle}>...</div>
+      </div>
+    </section>
+  );
+};
+```
+
+This library is filled to the brim with novel great features, and I've just touched the surface here.
+
+## Advantages
+
+1. Strongly typed Style authoring experience.
+
+2. Theming and Breakpoints are super easy to do.
+
+3. Super performant, as it gets out of your bundle completely, leaving only plain CSS in the end, which just works.
+
+4. Framework agnostic
+
+## Disadvantages
+
+1. Again, this style of writing CSS as JS objects might seem unnatural to some people. It's a nitpick.
+
+# Conclusion
+
+Here's a very brief rundown of some techniques with which you can style your React apps and components. None of these are better than the other, it's just what you find most comfortable for yourselves/your team. CHoose wisely!
+
+That's it!
+Signing off! 👋
