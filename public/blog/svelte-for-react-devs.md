@@ -83,6 +83,96 @@ But that's not the important point here.
 
 ## Effects
 
-First off, the reason the heading says `Effects`, not `useEffect` is because there are both `useEffect` and `useLayoutEffect`, and they both work differently.
+If you only care about side effects when some **state changes**, and you do not need to take DOM changes into consideration(as in, you don't care when they change), you can treat the `$: ` syntax as your `useEffect`, as just side-effects.
+
+```js
+useEffect(() => {
+  console.log(name);
+}, [name]);
+```
+
+Becomes simply 👇
+
+```js
+$: console.log(name);
+```
+
+You simply do not need to provide any dependency array. Svelte will automatically sort out your dependencies and trigger this effect whenever any dependency changes.
+
+But sometimes, you will use a lot of variables in your reactive statements and you don't want the statements to trigger on all of them, you can actually use a method which is very similar to providing your own dependency array 👇
+
+```js
+function doSomethingBigWithLotsOfDeps(state1, state2, state3, state4, state5) {
+  /* Do epic shit! */
+}
+
+$: doSomethingBigWithLotsOfDeps(state1, state2, state3, state4, state5);
+```
+
+Here, the `state1`, `state2` and others are reactive variables being passed to the function. Inside the function, you can use as many other reactive variables, and them changing won't trigger the reactive statement, only when these 5 reactive variables are changed. If you don't want to watch `state4` and `state5`, you simply do not accept these in the function 👇
+
+```js
+function doSomethingBigWithLotsOfDeps(state1, state2, state3) {
+  /* Do epic shit! */
+}
+
+$: doSomethingBigWithLotsOfDeps(state1, state2, state3);
+```
+
+### Emulating useEffect and useLayoutEffect
+
+First off, the reason the heading says `Effects`, not `useEffect` is because there are both `useEffect` and `useLayoutEffect` in React, and they both work differently.
 
 > Differences between `useEffect` and `useLayoutEffect`: All the `useEffect`s in a component are gathered, put in a queue and are executed **after** the component has rendered its HTML. Whereas `useLayoutEffect`s are collected and run before the DOM rendering process begins.
+
+Now, if you care about how your side-effects are timed with respect to your DOM changes, I got a slight bad news for you: `$: ` statements in Svelte are equivalent to `useLayoutEffect`, not `useEffect`.
+
+`useLayoutEffect` runs before the DOM changes are done when state is changed. Same with `$: ` reactive statements. If you want `useEffect` exactly, you need to use `afterUpdate` which runs after the DOM has been updated, but no dependencies there. It runs every single time any DOM update happens, plus the pattern doesn't look as good. You'd end up doing your own diffing. Use it sparingly.
+
+### Cleanup function?
+
+One big feature of `useEffect` and `useLayoutEffect` is the ability to return a `cleanup` function. Svelte's reactive statements unfortunately have no built-in method to do so, but we can apply a little hack to achieve that 👇
+
+```js
+let cleanup;
+$: {
+  cleanup?.();
+
+  doStuff();
+
+  cleanup = () => someFunctionThatDoesCleanup();
+}
+```
+
+And no, this won't trigger an infinite loop. Reassignment inside a reactive statement won't trigger that reactive statement again.
+
+Alternatively, sometimes you'd need to do cleanup when the component is destroyed, so you'd need to run this cleanup function inside the `onDestroy` lifecycle method 👇
+
+```js
+onDestroy(() => {
+  cleanup?.();
+});
+```
+
+### Scratching your itch
+
+If you find this pattern a little hard to wrap your mind around, there's another way, in which you actually use `useEffect` in Svelte.
+
+```js
+const useEffect = (subscribe) => ({ subscribe });
+
+export let track;
+
+let effect;
+$: effect = useEffect(() => {
+  doStuff();
+
+  return () => {
+    doCleanupStuff();
+  };
+});
+
+$: $effect;
+```
+
+This may feel weird, but it shows you can have `useEffect` in Svelte too, albeit in a slightly different manner. A very good explanation of this technique in this amazing blog post: [A Svelte Version of useEffect](https://dylanvann.com/svelte-version-of-useeffect)
