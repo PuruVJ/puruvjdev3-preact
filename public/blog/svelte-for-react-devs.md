@@ -1,5 +1,5 @@
 ---
-title: 'Mind-map: Svelte for React Devs'
+title: 'Svelte for React Devs: Patterns, Anti-patterns and gotchas'
 description: A mind map to learn Svelte for React devs
 date: 9 Jun 2021
 ---
@@ -176,3 +176,44 @@ $: $effect;
 ```
 
 This may feel weird, but it shows you can have `useEffect` in Svelte too, albeit in a slightly different manner. A very good explanation of this technique in this amazing blog post: [A Svelte Version of useEffect](https://dylanvann.com/svelte-version-of-useeffect)
+
+# Styling
+
+Now, this is the most kickass feature of Svelte for me: **Styling in place**
+
+Svelte is just like a plain HTML file: You can put your styles right in your component file. Unlike HTML however, the styles are scoped to that component only.
+
+```html
+<section class="container">
+  <img class="avatar" src="..." />
+  <div class="userInfo">
+    <div class="userName">...</div>
+    <div class="userStatus">...</div>
+  </div>
+</section>
+
+<style>
+  .container {
+  }
+
+  .avatar {
+  }
+
+  .userInfo {
+  }
+
+  .userName {
+  }
+
+  .userStatus {
+  }
+</style>
+```
+
+So tidy, clean and simple 😌
+
+And these styles are scoped by default!! We ourselves don't have to do anything else to achieve the scoping, unlike React, where first you gotta learn 10 ways of styling, spend days researching them and then just picking one up in frustration.
+
+> Unlike CSS Modules, you don't have to litter your HTML with `css.container` or `css.avatar` and stick to only class. Style IDs directly, style tag names directly, do whatever you need to do without letting the framework come in your way. This is the beauty of styling in Svelte.
+
+> Unlike Styled components, no need to declare style in a string template, and install VSCode extension for syntax highlighting and autocomplete, which itself is quite buggy a lot of the times.
