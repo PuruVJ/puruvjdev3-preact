@@ -179,7 +179,9 @@ This may feel weird, but it shows you can have `useEffect` in Svelte too, albeit
 
 # Styling
 
-Now, this is the most kickass feature of Svelte for me: **Styling in place**
+Now, styling is something we devs don't think much about, but in React, styling is pure pain! There's no recommended way of styling, so you basically have to go read for days about a dozen libraries first, then choose one in frustration. Having choices is great, but if there's no base recommended way to fall back to, it's frustrating.
+
+Now, This is the most kickass feature of Svelte for me: **Styling in place**
 
 Svelte is just like a plain HTML file: You can put your styles right in your component file. Unlike HTML however, the styles are scoped to that component only.
 
@@ -217,3 +219,159 @@ And these styles are scoped by default!! We ourselves don't have to do anything 
 > Unlike CSS Modules, you don't have to litter your HTML with `css.container` or `css.avatar` and stick to only class. Style IDs directly, style tag names directly, do whatever you need to do without letting the framework come in your way. This is the beauty of styling in Svelte.
 
 > Unlike Styled components, no need to declare style in a string template, and install VSCode extension for syntax highlighting and autocomplete, which itself is quite buggy a lot of the times.
+
+But you probably know this already, so I won't beat around the bush much.
+
+Let's talk about something that is not discussed at all. This is something that us React devs find very difficult in Svelte: **Styling Components from Outside**
+
+## Styling components from outside - in React
+
+Let's assume you have an `Avatar` component for displaying user's profile picture in the `Card` component.
+
+```js
+const Card = () => {
+  return (
+    <section className="container">
+      <Avatar />
+      <div className="userInfo">
+        <div className="userName">...</div>
+        <div className="userStatus">...</div>
+      </div>
+    </section>
+  );
+};
+```
+
+> For brevity, let's assume the code above to be in React, and has scoping somehow.
+
+Say you wanna modify the style of `Avatar` component from outside, that is from `Card` component only. How do you do this?
+
+Well, if you are using CSS Modules/Emotion/Any other library where you define your styles and have a `className` to work with, like with CSS Modules 👇
+
+```js
+/* CSS MODULES */
+import css from './Card.module.css';
+
+export const Card = () => {
+  return (
+    <section className={css.container}>
+      <img className={css.avatar} src="..." />
+      <div className={css.userInfo}>
+        <div className={css.userName}>...</div>
+        <div className={css.userStatus}>...</div>
+      </div>
+    </section>
+  );
+};
+```
+
+Or with JSS 👇
+
+```js
+import { createUseStyles } from 'react-jss';
+
+const useStyles = createUseStyles({
+  container: {
+    /* Container styles here */
+  },
+  avatar: {
+    /* Avatar styles here */
+  },
+  userInfo: {
+    /* userInfo styles here */
+  },
+  userName: {
+    /* userName styles here */
+  },
+  userStatus: {
+    /* userStatus styles here */
+  },
+});
+
+export const Card = () => {
+  const css = useStyles();
+
+  return (
+    <section className={css.container}>
+      <img className={css.avatar} src="..." />
+      <div className={css.userInfo}>
+        <div className={css.userName}>...</div>
+        <div className={css.userStatus}>...</div>
+      </div>
+    </section>
+  );
+};
+```
+
+So when we swap it with `Avatar` component, and style it ourselves(Let's say, make it square rather than round), the markup is as simple as this 👇
+
+```js
+<section class={css.container}>
+  <Avatar class={css.squaredAvatar} />
+  <div class={css.userInfo}>
+    <div class={css.userName}>...</div>
+    <div class={css.userStatus}>...</div>
+  </div>
+</section>
+```
+
+As you can see, we simply pass the new style along to `Avatar` component as `css.squaredAvatar` class, and our `Avatar` component is set up to take all the props passed to it and pass them to the underlying `img` component. This just works!!
+
+But if you try the same thing svelte(assuming you have set up `Avatar` to accept all the props and apply them to the underlying `img`) 👇
+
+```html
+<script>
+  import Avatar from './Avatar.svelte';
+</script>
+
+<section class="container">
+  <Avatar class="squaredAvatar" />
+  <div class="userInfo">
+    <div class="userName">...</div>
+    <div class="userStatus">...</div>
+  </div>
+</section>
+
+<style>
+  .container {
+  }
+
+  .squaredAvatar {
+  }
+
+  .userInfo {
+  }
+
+  .userName {
+  }
+
+  .userStatus {
+  }
+</style>
+```
+
+**...this won't work**.
+
+Svelte will pass along the class you gave it to the underlying `img` element, but it won't apply the styles.
+
+Svelte's limitation is that the class must be on a DOM element, like `div`, `section` or `img`, then only will Svelte recognize it. But if you declare styling for the `squaredAvatar` class, and apply it to a component, Svelte will mark your style as unused and remove it in production.
+
+The fix for this is using `:global()`.
+
+Find a parent of the component. In this case it's `section.container` element.
+
+Then define your style like this 👇
+
+```scss
+.container :global(.squaredAvatar) {
+  /* Your styles go here */
+}
+```
+
+**Breakdown**: We use a class of a component that Svelte can recognize, then we write a `:global(.squaredAvatar)` after it. Using `:global` in Svelte is basically telling Svelte that you know what you're doing, you're right and the compiler is wrong. And so, Svelte Compiler will let the `squaredAvatar` class be preserved here as it is.
+
+> Why not directly use `:global(.squaredAvatar) {`?
+> \
+> Because if you use this directly, svelte will output the style globally `.squaredAvatar { /* Styles here */ }`, which could mess up with any other `.squaredAvatar` class defined anywhere else in your app, even if it is scoped, it will be affected.
+> <br/>
+> That's we scope this class to our component by writing it as a child of an element that Svelte can scope.
