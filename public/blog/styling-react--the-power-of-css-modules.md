@@ -183,4 +183,190 @@ Your CSS file's classes are basically mangled, and converted into this 👇
 }
 ```
 
-And their names are stored as variables in this JS module that you saw above.
+And their names are stored as variables in this JS module that you saw above. This is the complete mechanism of CSS Modules.
+
+Now that we're done with how CSS Modules work and the basic syntax, let's get into the nitty-gritty!
+
+## Using with Pre-processors and PostCSS
+
+CSS Modules work seamlessly with pre-processors like **SASS**, **LESS**, **Stylus**, etc, and also with PostCSS, so any PostCSS config you have will work just fine.
+
+## Gotchas
+
+With everything great, there are some limitations. Here are the things you gotta watch out for.
+
+### No styling the IDs!!
+
+CSS Modules scope only the classes. They don't scope you styling the IDs, or tag names directly, as in, trying this 👇
+
+```css
+.someStyleClass {
+}
+
+img {
+  display: none;
+}
+```
+
+will mangle the className, thus scoping it, but the style applied to `img` there won't be scoped, rather it would be global, and hence, all the `img`s in your app will have `display: none` applied to them, which if you ask me, is nothing short of a disaster 😅
+
+However, you can achieve this behavior by putting the img as a descendent of the root element in the component. In simple words, this 👇
+
+```css
+.container {
+}
+
+.container img {
+  display: none;
+}
+```
+
+`.container` class would mangled and scoped, so ultimately, your `img`'s styling will be applied only in this component, nowhere else!
+
+Same with styling `Id`s 👇
+
+```css
+.container {
+}
+
+.container #image {
+  display: none;
+}
+```
+
+# The delicious parts 😋
+
+CSS Modules come with some very tasty stuff. They don't just offer scoping, but so much more. Here are some of them.
+
+## :global
+
+Sometimes, you need to opt out of scoping for some specific styles. Let's take for example, applying special style when body has a specific class
+
+```css
+.header {
+  color: green;
+}
+
+body.dark .header {
+  color: blue;
+}
+```
+
+This works pretty well, you don't need any globalising here. But say, you're using SCSS, and your `.header` is nested in another selectors 👇
+
+```scss
+.container {
+  .someRandomDiv {
+    .header {
+      color: green;
+    }
+
+    body.dark .header {
+      color: blue;
+    }
+  }
+}
+```
+
+This won't work, as after SCSS compilation, the code would look something like this 👇
+
+```css
+.container .someRandomDiv body.dark .header {
+  color: blue;
+}
+```
+
+As you can clearly see, it expects `body` as a child now, but that simply isn't possible. What we need is body being the top most selector
+
+```css
+body.dark .container .someRandomDiv .header {
+  color: blue;
+}
+```
+
+This is what we desire. How to do this?
+
+This is what exactly CSS Modules' `:global` selector is for. We want to make `body.dark` global, and so, we can simply re-write the SCSS code like this 👇
+
+```scss
+.container {
+  .someRandomDiv {
+    .header {
+      color: green;
+    }
+
+    :global(body.dark) .header {
+      color: blue;
+    }
+  }
+}
+```
+
+Now This whole selector will be made global, and we'll get the desired output.
+
+## Composing multiple styles together
+
+In CSS Modules, you can basically create a single class, and then compose it within other classes. Here's what I mean 👇
+
+```css
+.classA {
+  background-color: green;
+  color: white;
+}
+
+.classB {
+  composes: classA;
+  color: blue;
+}
+```
+
+As you can see, `.classB` has a special property `composes`, and its value is `classA`. This is how `composes` works: You pass the class name you want incorporated into your style as the value for `composes`.
+
+And in fact, you're not limited to classes defined in the same file. The class to be composed can come from another CSS file 👇
+
+```css
+.classB {
+  composes: classA from './classB.css';
+  color: blue;
+}
+```
+
+This syntax looks a little weird, but once you get used to it, there's no going back!
+
+Composition in CSS Modules allow you to build reusable styles, and whole Design Systems. You could build your own [Tailwind](https://tailwindcss.com/) and [Windi](https://windicss.org/)! Quite exciting, right!?!? 😻😻
+
+## Variables
+
+CSS Modules have their own variable system too!!
+
+```css
+@value blue: #0c77f8;
+@value red: #ff0000;
+@value green: #aaf200;
+
+.button {
+  color: blue;
+  display: inline-block;
+}
+```
+
+As you can see, there's some trickery going on here!! `red`, `green` and `blue` are colors already defined in browser, but I assume you'll agree with me, that they are horribly ugly!
+
+So here, we're simply redefining these colors for our own purposes. This is some wizardry that SCSS/LESS/CSS variables simply can't achieve, so CSS Modules variables have some serious edge here.
+
+And you can basically import these in other files
+
+```css
+/* import your colors... */
+@value colors: "./colors.css";
+@value blue, red, green from colors;
+
+.button {
+  color: blue;
+  display: inline-block;
+}
+```
+
+Super good!!
+
+OFC, these variables aren't live. As in during compile time, these variables are stripped away and they are replaced with their actual values. So if you are planning on changing some global variables for theme switching purposes, you can't do that, you'll have to go the [CSS variables path](https://blog.logrocket.com/how-to-create-better-themes-with-css-variables-5a3744105c74/) for that!
