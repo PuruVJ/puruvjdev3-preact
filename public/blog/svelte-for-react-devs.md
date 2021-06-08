@@ -1,5 +1,5 @@
 ---
-title: 'Svelte for React Devs: Patterns, Anti-patterns and gotchas'
+title: 'Svelte for Reactaholics'
 description: A mind map to learn Svelte for React devs
 date: 9 Jun 2021
 ---
@@ -183,7 +183,7 @@ Now, styling is something we devs don't think much about, but in React, styling 
 
 Now, This is the most kickass feature of Svelte for me: **Styling in place**
 
-Svelte is just like a plain HTML file: You can put your styles right in your component file. Unlike HTML however, the styles are scoped to that component only.
+Svelte is just like a plain HTML file: You can put your styles right in your component file. Unlike HTML however, the styles are scoped to that component.
 
 ```html
 <section class="container">
@@ -373,5 +373,111 @@ Then define your style like this 👇
 > Why not directly use `:global(.squaredAvatar) {`?
 > \
 > Because if you use this directly, svelte will output the style globally `.squaredAvatar { /* Styles here */ }`, which could mess up with any other `.squaredAvatar` class defined anywhere else in your app, even if it is scoped, it will be affected.
-> <br/>
+> <br/><br/>
 > That's we scope this class to our component by writing it as a child of an element that Svelte can scope.
+
+## Composing classes and conditional classes
+
+If you're using the CSS in JS way in React, and wanna compose multiple classes, you have to use this syntax 👇
+
+```js
+<div className={`${css.class1} ${css.class2} ${css.class3}`} />
+```
+
+This isn't as bad. But look when you have to apply classes based on condition, things get messy
+
+```js
+<div className={`${css.class1} ${condition ? css.class2 : ''} ${css.class3}`} />
+```
+
+As you can see, now it has become pretty ugly. Make `class3` conditional, and the whole thing is gonna look super ugly.
+
+Hopefully, you might have fixed this problem by using libraries like [classnames](https://www.npmjs.com/package/classnames) and [clsx](https://www.npmjs.com/package/clsx)
+
+```js
+<div className={clsx(css.class1, condition && css.class2, css.class3)} />
+```
+
+Much more cleaner and intentional, but it kinda sucks that we had to pull in a whole library to just do conditional classes cleanly, especially when these use cases are present in almost every app.
+
+In svelte, you need nothing else, first let's see how you do the non-conditional example above 👇
+
+```html
+<div class="class1 class2 class3" />
+```
+
+And that's it!! Ultimate cleanliness!!
+
+And the conditional class is even easier 👇
+
+```html
+<div class="class1 class3" class:class3="{condition}" />
+```
+
+So simple and clean!! This is why I love Svelte so much. The developer experience it provides is the best in class 😍
+
+# Props
+
+Props in react are a little different in terms of authoring, but behave more or less the same, ultimately.
+
+```js
+export let prop;
+```
+
+Prop with default value? 👇
+
+```js
+export let prop = 'Hello';
+```
+
+Props with TypeScript? 👇
+
+```js
+export let prop: string = 'Hello';
+```
+
+Works flawlessly!!
+
+## Rest props ({...props})
+
+When authoring general purpose reusable components, like Button, or Image or anything like this, where you want the component to simply accept all the props it is given and pass them as it is to its child component, the actual `<button>` or `<img>` component, you use
+
+```js
+const Button = ({ children, ...props }) => {
+  return <button {...props}>{children}</button>;
+};
+```
+
+and every prop that you pass to `Button` will be given to `<button>`. This pattern is really useful.
+
+To achieve the same behavior in Svelte, there's a `$$props` and `$$restProps` variable in Svelte, injected into every component by Svelte itself. You don't have to declare it, it's available in global scope, like `$` of JQuery in old times 😉.
+
+`$$props`: All the props passed to the component, including the ones you declare(`export let propName`)
+
+`$$restProps`: All the **unknown** props, i.e., the ones not declared in the component
+
+So the component above will simply become this 👇
+
+```html
+<!-- Button.svelte -->
+
+<button {...$$restProps}>
+  <slot />
+</button>
+```
+
+### TypeScript
+
+In React, if your general purpose component is a simple wrapper over button, or any other component, you can type your props to accept all the props that `<button>` or `<img>` would take
+
+```tsx
+export const ButtonBase = ({ children, ...props }: JSX.IntrinsicElements['button']) => {
+  return <button {...rest}>{children}</button>;
+};
+```
+
+When you go to add props to `<ButtonBase>`, you'll get intellisense of every property that can be passed to a regular `<button`, and you won't be able to enter any property like `src` or `href`, which simply does not exist on a `<button>`, so you get some amazing Type Safety too.
+
+Unfortunately, in Svelte, there's no way to Give types to `$$props` or `$$restProps`. This is one place where Svelte loses some significant points, for me, as I'm a die-hard TypeScript Dev 🙃.
+
+# Global state
