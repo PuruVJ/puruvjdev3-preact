@@ -369,4 +369,210 @@ And you can basically import these in other files
 
 Super good!!
 
-OFC, these variables aren't live. As in during compile time, these variables are stripped away and they are replaced with their actual values. So if you are planning on changing some global variables for theme switching purposes, you can't do that, you'll have to go the [CSS variables path](https://blog.logrocket.com/how-to-create-better-themes-with-css-variables-5a3744105c74/) for that!
+OFC, these variables aren't live. As in, during compile time, these variables are stripped away and they are replaced with their actual values. So if you are planning on changing some global variables for theme switching purposes, you can't do that, you'll have to go the [CSS variables path](https://blog.logrocket.com/how-to-create-better-themes-with-css-variables-5a3744105c74/) for that!
+
+# Playing nice with TypeScript
+
+CSS Modules are great, but only 1 little issue with them: **VSCode Intellisense**.
+
+First off, if you're using TypeScript, you simply can't do
+
+```js
+import css from './Card.module.css';
+```
+
+VSCode will yell at you looking at the `.css` at the end. So you'll need to put a fix here.
+
+> Note: If you're using `create-react-app` or Vite's `react` scaffolds, you don't need the steps below, they already have the minimal configuration built-in to allow `.css`, `.scss`, `.less`, `.styl`, etc in `import` statements.
+
+Create a `types.d.ts` in your `src` folder(Or whatever your source folder is), and put in this config 👇
+
+```ts
+declare module '*.module.css' {
+  const classes: { [key: string]: string };
+  export default classes;
+}
+
+declare module '*.module.scss' {
+  const classes: { [key: string]: string };
+  export default classes;
+}
+
+declare module '*.module.sass' {
+  const classes: { [key: string]: string };
+  export default classes;
+}
+
+declare module '*.module.less' {
+  const classes: { [key: string]: string };
+  export default classes;
+}
+
+declare module '*.module.styl' {
+  const classes: { [key: string]: string };
+  export default classes;
+}
+```
+
+As you can see, this will make VSCode interpret your CSS Modules as basically a key value pair. So you'll get no warnings when using `css.*` anywhere, as VSCode knows it returns a string.
+
+But it is not the best experience ever. For example, when type `css.`, you don't get a list of classes you declared. You're basically typing in blind. One typo, and the program breaks, until you look very closely and find the source of the issue.
+
+But there are tricks to get that sweet, sweet, list intellisense and strict name checking, just like this 👇
+
+![CSS Modules intellisense in VSCode](../assets/media/css-modules--intellisense-demo.gif)
+
+See that sweet sweet intellisense? And not only that, even if you do type the name manually, and make a typo, **TypeScript will scream at you** with its red squiggles. This is where strict type checking comes in. If you haven't defined a class, you simply can't use it! And while doing refactoring, deleting some of your CSS, your `.tsx` files will give errors if a class is missing and you have used it, so the editor itself will tell you what needs to be changed, rather than you squinting at every single line of code.
+
+> And the best part: You don't need any VSCode extension for this 🤩
+
+## The best way
+
+This is the best and most optimal method here. It is really fast, feels native, as if TypeScript itself knows about your CSS Modules, and doesn't clutter your workspace with `d.ts` files. It just works!!
+
+And the best part: Because it's just an npm package, and because the tsconfig is there, anyone else(team member/collaborator) will have the same experience as you out of the box, without any config. No need for them to download any extension, just the plain old `npm install` will do it for them.
+
+Magic!!!
+
+Here's how to set it up 👇
+
+### npm install typescript-plugin-css-modules
+
+Install this little npm package, preferably as a `devDependency` (-D).
+
+```sh
+npm i --save-dev typescript-plugin-css-modules
+
+# Or if you're a yarn person
+
+yarn add --save-dev typescript-plugin-css-modules
+```
+
+> And yeah, in case you were wondering, TypeScript does have its own plugin architecture. Heck, I myself found it very recently, [when I moved a project of mine to CSS Modules from Styled Components 😅](https://puruvj.dev/blog/move-to-css-modules-from-styled-components).
+
+### Add to tsconfig.json
+
+Open up your `tsconfig.json`, and add to the `compilerOptions` property this one liner:
+
+```json
+"plugins": [{ "name": "typescript-plugin-css-modules" }]
+```
+
+### Set VSCode TypeScript version
+
+This one is superrrrrr important. The TypeScript version your VSCode uses should be the local version(The one installed in your project locally), otherwise this whole song and dance of installing plugins and setting config will be worthless.
+
+Open a `.ts` or `.tsx` file in VSCode, On bottom left you'll see this little option 👇
+
+![TS version in bottom right corner of VSCode](../assets/media/css-modules--typescript-version-photo-1.png)
+
+This is your TypeScript version. Click on it, and a list popup will open on the very top 👇
+
+![Choose TypeScript version](../assets/media/css-modules--typescript-version-photo-2.png)
+
+Click on Select TypeScript Version. That will show these options 👇
+
+![Select Workspace version](../assets/media/css-modules--typescript-version-photo-3.png)
+
+As you can see, I have Use VS Code's Version selected(Look at the white dot before). Click on Use Workspace Version, and you are all set.
+
+And here's your setup. In less than 5 minutes. Super simple, right?
+
+Enjoy the amazing DX 😀.
+
+> Oh, and in case you were wondering, it works perfectly with Sass too 😉
+
+## Honorable Mentions
+
+Here are some more methods that are... OK, I guess 😅. I used these, and they weren't as good as the technique above.
+
+### VSCode extension
+
+So, there are a few VSCode extensions out there that provide similar level of intellisense. Notice I used the word similar, not same, because
+
+1. They were a little slower - They slowed down VSCode a little bit. On my fast laptop, it negligible, but on my other older laptop, it was noticeably slow.
+
+1. Choppy Intellisense - The intellisense wasn't always accurate, and sometimes had some noise in it like units(9px, 3rem) when you typed styles., which was definitely a bit weird.
+
+1. I dislike extensions - I am an extreme minimalist. My hunger to reduce things and have only the things necessary is super big. I only have 7 VSCode extensions, and only 2-3 are enabled for each workspace at a time. I worked on a super old and slow computer for 4 years, so it's habit to keep these 3rd party things as low as possible(even though I'm on a super fast computer one now 😅)
+
+But still, this extension is good enough if you can't get The Best Method above working.
+
+Oh, and as for the extension itself, I won't drop a link. There are so many coming out and some are better, some aren't, and its in constant flux. It's recommended to just do a search. The keywords: CSS Modules should give good results.
+
+### `typings-for-css-modules-loader`
+
+This is a Webpack-only loader. This will do the trick too.
+
+As I have no experience in Webpack, I can't explain the usage. I recommend you to check out the documentation @ [NPM](https://www.npmjs.com/package/typings-for-css-modules-loader)
+
+#### The CLI
+
+There's a CLI out there that will generate `d.ts` files for your CSS modules. Check it out here: [typed-css-modules](https://github.com/Quramy/typed-css-modules).
+
+It has a watch mode, so you won't have to run it again everytime you edit your CSS files. Thats handy.
+
+Though OFC, it only works on plain CSS files, not `SCSS` or `SASS` or `STYL`. Plus there's that hiccup of remembering to run this command in a parallel terminal, or using a script to turn it on automatically along with your Web server.
+
+#### For Sass
+
+Its again a CLI and inspired from `typed-css-modules` CLI: [typed-scss-modules](https://github.com/skovy/typed-scss-modules). Its a really good tool.
+
+> This approach is good, but the biggest drawback I see is the d.ts files generated. it sort off clutters your workspace and Git commits.
+
+### Manually
+
+The last method is manually adding in the typings yourselves.
+
+God forbid if you have to resort to this! 😱😱
+
+It involves making a `d.ts` file next to your CSS modules file, and defining modules and putting in the class names yourselves. Its a really bad method. If you add a class to you CSS module, you have to add it to the `d.ts` too. If you change something, and the project is too big, you're basically screwed, cuz you won't remember to change it in the d.ts most probably.
+
+# Bonus material
+
+As CSS Modules rely on using the `css.*` pattern, composing multiple classes becomes painful, as you have to do this:
+
+```js
+<div className={`${css.classA} ${css.classB} ${css.classC}`} />
+```
+
+It looks a little ugly, but it's still manageable. But once you try to have conditional classes here, things go off the rails
+
+```js
+<div className={`${css.classA} ${condition1 ? css.classB : ''} ${condition2 ? css.classC : ''}`} />
+```
+
+Ewww!! That's ugly as hell. 😖😖
+
+The ternary hell here is pretty bad. We have to render an empty string manually if the condition is false. If we did just `condition1 && css.classB`, it would've been pretty clean and legible, but if the condition is false, it would output a `null` in the `className`. Pretty sure no one will style `null` class, but as a rule, let's not have the `null` in our classes at all.
+
+So, to make this cleaner, we can use the `clsx` library. It's a small 228B library that makes dealing with class composition much easier!
+
+Using it, the code above becomes super clean 👇
+
+```js
+import clsx from 'clsx';
+
+// Later in the component
+<div className={clsx(css.classA, condition1 && css.classB, condition2 && css.classC)} />;
+```
+
+Now its much more cleaner, literally no noise now. Really good. And that's not all the ways of using this library. You can pass an object to it 👇
+
+```js
+<div
+  className={clsx({
+    [css.classA]: true,
+    [css.classB]: condition1,
+    [css.classC]: condition2,
+  })}
+/>
+```
+
+This is another way!
+
+`clsx` is a very very versatile library, and any time I jump onto a new React/Preact package, I always install it in the very beginning, even if I don't use it very much. It being <mark>228 Bytes</mark> doesn't really make this a regret, as far as bundle size is concerned.
+
+# Conclusion
+
+I hope you find this article helpful. CSS Modules are truly amazing, once you start using, you'll fall in love with them
