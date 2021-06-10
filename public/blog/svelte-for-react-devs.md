@@ -81,6 +81,44 @@ But that's not the important point here.
 
 > Take Away: Every variable in Svelte is reactive state by default. No special useState or State or anything. Just declare a `let` variable, modify it directly and boom!! You're done. And the ones you don't modify are simply values stores somewhere else, totally un-reactive and have no effect on perf.
 
+### Scratching you itch: useState in Svelte
+
+If you find the "just-define-variable-and-it-becomes-state" strange, here's something that could make the transition easy: `useState in Svelte`
+
+Here's the code 👇
+
+```js
+export function useState(initialState) {
+  const state = writable(initialState);
+
+  const update = (val) =>
+    state.update((currentState) => (typeof val === 'function' ? val(currentState) : val));
+
+  const readableState = derived(state, ($state) => $state);
+
+  return [readableState, update];
+}
+```
+
+And you can use this the same way you use `useState` in React.
+
+Oh, and if you're a TypeScripter, you may wanna copy this function instead 👇
+
+```js
+export function useState<TState>(initialState: TState) {
+  const state = writable(initialState);
+
+  const update = (val: (e: TState) => void | TState) =>
+    state.update((currentState) => (typeof val === 'function' ? val(currentState) : val));
+
+  const readableState = derived(state, ($state) => $state);
+
+  return [readableState, update] as const;
+}
+```
+
+This should work well for you and give the correct intellisense.
+
 ## Effects
 
 If you only care about side effects when some **state changes**, and you do not need to take DOM changes into consideration(as in, you don't care when they change), you can treat the `$: ` syntax as your `useEffect`, as just side-effects.
@@ -154,7 +192,7 @@ onDestroy(() => {
 });
 ```
 
-### Scratching your itch
+### Scratching your itch: useEffect in Svelte
 
 If you find this pattern a little hard to wrap your mind around, there's another way, in which you actually use `useEffect` in Svelte.
 
@@ -481,3 +519,144 @@ When you go to add props to `<ButtonBase>`, you'll get intellisense of every pro
 Unfortunately, in Svelte, there's no way to Give types to `$$props` or `$$restProps`. This is one place where Svelte loses some significant points, for me, as I'm a die-hard TypeScript Dev 🙃.
 
 # Global state
+
+In React, the most popular way to have global state is using the `context` API. And even more popular is using `useReducer` with it. Well, some news for you(good or bad, depends on you), Svelte has neither of those(It has context, though it's a little different from React context, more on that later). And reducers are discouraged, but you can create your own methods of using reducers(More on that later).
+
+## Svelte context
+
+Svelte has context like React. But if you're reading this article, and have some experience with Svelte, I really really recommend using `Svelte Stores`. They're one of the best APIs in Svelte, and make global state management amazingly easy.
+
+## Svelte Stores 💪
+
+Svelte Stores are one of the best parts of Svelte. SUper easy to use, super simply to understand, and overall one of the best API Designs I have ever seen.
+
+So, a Store API is actually closer to `useState` in react, but it can be declared inside the component as well as outside, in a separate file, so you can actually use `Stores` as local state for your components too 😀
+
+But all that aside, here's the syntax 👇
+
+```js
+import { writable } from 'svelte/stores';
+
+export const count = writable(0);
+```
+
+Here we have created a store named `count`, and initialized with value of 0.
+
+Now you csn create function that update the value of count, and use them anywhere,
+
+```js
+function incrementCount() {
+  count.update((n) => n++);
+}
+```
+
+You can even subscribe to these stores and watch them
+
+```js
+count.subscribe((c) => console.log(c));
+```
+
+And you can have immutable stores that simply can't be changed in any way. You can use these to create values that should be come from somewhere else, like a timer store
+
+```js
+export const time = readable(new Date(), function start(set) {
+  const interval = setInterval(() => {
+    set(new Date());
+  }, 1000);
+
+  return function stop() {
+    clearInterval(interval);
+  };
+});
+```
+
+Now `time` will update on its own. You yourselves won't be able to modify it. Think of it as a reactive `Date`. Date as state, updating your other state is just so cool. You can even use readable stores to create reactive localStorage wrappers, so they trigger update if localStorage was changed.
+
+```js
+export const theme = readable(null, function start(set) {
+  const interval = setInterval(() => {
+    set(localstorage.getItem('theme'));
+  }, 500);
+
+  return function stop() {
+    clearInterval(interval);
+  };
+});
+```
+
+As you can see, we made a theme variable that comes exclusively from `localstorage`. To change this state, you'd have to change the localstorage value directly.
+
+> Note: This isn't fully reactive, as we put a timer of 500ms, so changes within the 500ms window won't be caught, and only the last one will be caught. But still, this pattern is considerable.
+
+And you can compose multiple stores to form 1 big store, that changes when any of its constituents change 👇
+
+```js
+import { derived } from 'svelte/stores';
+
+export const elapsed = derived(time, ($time) => Math.round(($time - start) / 1000));
+```
+
+This is another reactive store telling us the time elapsed since a given time.
+
+Or with many more stores 👇
+
+```js
+export const derivedVal = derived(
+  [name, baseStore],
+  ([$name, $baseStore]) => {
+    return $baseStore.counter * 2;
+  },
+  0
+);
+```
+
+1st argument takes an array of all the stores you want to compose, 2nd argument, the function, you can actually destructure the parameter as array, and you'll get your values. Just as simple as that.
+
+### Using in components
+
+Using Svelte stores in components is an amazing experience. By using Svelte's magic, you can get stores to work just like local state 👇
+
+```html
+<script>
+  import { time } from './stores';
+</script>
+
+<div>The time currently: {$time}</div>
+```
+
+I simply imported the `time` store, and used it directly like a value by putting a `$` before the name. Where did this variable come from? Svelte made it available!! Now your template will update automatically as `$time` changes!!.
+
+## Scratching itch: useReducer in Svelte
+
+Now, as I promised, I will show you how you can implement the `useReducer` pattern in svelte, just like React
+
+```js
+function reducer(count, action) {
+  switch (action.type) {
+    case 'increment':
+      return count + 1;
+    case 'decrement':
+      return count - 1;
+    default:
+      throw new Error();
+  }
+}
+
+const [count, dispatch] = useReducer(0, reducer);
+```
+
+And this is how you would define `useReducer`
+
+```js
+function useReducer(state, reducer) {
+  const { update, subscribe } = writable(state);
+
+  function dispatch(action) {
+    update((state) => reducer(state, action));
+  }
+
+  return [{ subscribe }, dispatch];
+}
+```
+
+Here it is. We're using a store to implement the state here. But again, I implore you, try to use this as minimally as possible. Svelte is simple, so the overall code should be simple too 🙂
